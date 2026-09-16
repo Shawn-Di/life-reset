@@ -4,13 +4,14 @@ The core content pack and reminder generator are platform-neutral. Integration d
 
 | Platform | Skill import | New conversation | Continue saved conversation | Current status |
 | --- | --- | --- | --- | --- |
-| Codex | `SKILL.md` | Use host automation | Use saved task ID when available | First adapter template |
-| Claude Code | Copy Skill instructions | Configure host workflow | Configure host workflow | Generic adapter |
-| Kimi | Import or paste Skill instructions | Configure Kimi workflow if available | Configure Kimi workflow if available | Generic adapter |
-| WorkBuddy | Import or paste Skill instructions | Configure WorkBuddy workflow if available | Configure WorkBuddy workflow if available | Generic adapter |
+| Codex | `skills/life-reset/SKILL.md` or `npx skills add ... -a codex` | Use host automation | Use saved task ID when available | First adapter template |
+| Claude Code | `npx skills add ... -a claude-code` or Claude plugin | Configure host workflow | Configure host workflow | Generic adapter |
+| Kimi | `/plugins install <GitHub URL>` or `npx skills add ... -a kimi-code-cli` | Configure Kimi workflow if available | Configure Kimi workflow if available | Generic adapter |
+| WorkBuddy | `gh skill install ...` preview or Skill Marketplace ZIP | Configure WorkBuddy workflow if available | Configure WorkBuddy workflow if available | Generic adapter |
 | 豆包 | Import or paste Skill instructions | Configure 豆包 workflow if available | Configure 豆包 workflow if available | Generic adapter |
-| AutoGravity | Import or paste Skill instructions | Configure AutoGravity workflow if available | Configure AutoGravity workflow if available | Generic adapter |
-| Grok Bot | Import or paste Skill instructions | Configure Grok workflow if available | Configure Grok workflow if available | Generic adapter |
+| AutoGravity | `agy plugin install <GitHub URL>` or `npx skills add ... -a antigravity` | Configure AutoGravity workflow if available | Configure AutoGravity workflow if available | Generic adapter |
+| Grok Build | `npx skills add ... -a grok` | Configure Grok workflow if available | Configure Grok workflow if available | Generic adapter |
+| Grok Bot | Import or paste Skill instructions or official marketplace | Configure Grok workflow if available | Configure Grok workflow if available | Generic adapter |
 
 No adapter claims private API support. If a platform cannot create a new conversation or send to an existing one, use the generated message manually or connect it to that platform's own workflow system.
 
@@ -21,3 +22,4 @@ Every adapter should preserve these rules:
 3. The operation uses the user's existing platform identity and token.
 4. The first new conversation is titled exactly `Life-reset`.
 5. Later reminders reuse the saved conversation when it remains accessible.
+6. If the saved conversation was deleted or is inaccessible, create a replacement titled exactly `Life-reset`.

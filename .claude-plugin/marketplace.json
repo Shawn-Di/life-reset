@@ -1,0 +1,15 @@
+{
+  "name": "life-reset",
+  "owner": {
+    "name": "Shawn-Di",
+    "url": "https://github.com/Shawn-Di"
+  },
+  "plugins": [
+    {
+      "name": "life-reset",
+      "source": "./",
+      "description": "主动提醒并持续提供个人成长人生导师对话的 Skill。",
+      "version": "0.1.0"
+    }
+  ]
+}

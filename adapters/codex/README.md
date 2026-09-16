@@ -4,14 +4,22 @@ This adapter uses the user's existing Codex account and permissions. `life-reset
 
 ## Install the Skill
 
-Copy the repository's `SKILL.md` into the Codex user Skill directory:
+Install the standard Skill target with one command:
+
+```bash
+npx skills add https://github.com/Shawn-Di/life-reset/tree/master/skills/life-reset -g -a codex --copy -y
+```
+
+Manual fallback:
+
+Copy `skills/life-reset/SKILL.md` into the Codex user Skill directory:
 
 ```text
 Windows: %USERPROFILE%\.codex\skills\life-reset\SKILL.md
 macOS/Linux: ~/.codex/skills/life-reset/SKILL.md
 ```
 
-The Codex UI metadata is in `agents/openai.yaml`.
+The Codex UI metadata is in `skills/life-reset/agents/openai.yaml`.
 
 ## Connect the reminder
 
