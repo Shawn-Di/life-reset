@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "life-reset-day-one",
+      "title": "人生重启",
+      "author": "Dan Koe",
+      "sourceUrl": "https://letters.thedankoe.com/p/how-to-fix-your-entire-life-in-1",
+      "sourcePublishedAt": "2025-12-23",
+      "summary": "真正的改变不只是增加几个目标或逼自己更自律，而是重新审视当前身份、想要的生活和每天的行为。通过反思不想继续的生活，定义愿意靠近的方向，再把方向拆成年度使命、月度项目和今天能执行的行动。",
+      "prompt": "如果未来五年什么都不改变，你最不愿意继续过哪一种普通的一天？",
+      "action": "拿纸笔写下一个你不想继续接受的生活状态，再写下明天可以完成的一个最小行动。",
+      "copyrightNote": "本项目只保存原创摘要、行动问题和原文链接，不保存或重新发布文章全文。"
+    }
+  ]
+}

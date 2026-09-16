@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/life-reset/life-reset/schema/reminder.schema.json",
+  "title": "Life-reset content pack",
+  "type": "object",
+  "required": ["version", "items"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/contentItem"
+      }
+    }
+  },
+  "$defs": {
+    "contentItem": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "author",
+        "sourceUrl",
+        "sourcePublishedAt",
+        "summary",
+        "prompt",
+        "action",
+        "copyrightNote"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "title": { "type": "string", "minLength": 1 },
+        "author": { "type": "string", "minLength": 1 },
+        "sourceUrl": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "sourcePublishedAt": {
+          "type": "string",
+          "format": "date"
+        },
+        "summary": { "type": "string", "minLength": 1 },
+        "prompt": { "type": "string", "minLength": 1 },
+        "action": { "type": "string", "minLength": 1 },
+        "copyrightNote": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
