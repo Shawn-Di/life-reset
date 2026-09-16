@@ -1,19 +1,37 @@
-# 人生重启 / Life-reset
+# Life-reset
 
-一个开源的 AI 主动提醒 Skill。它以 Dan Koe 的文章《How to fix your entire life in 1 day》为第一份内容源，提醒用户重新审视当前生活、方向和下一步行动。
+一个会主动提醒你重新审视生活方向的 AI Skill。
 
-## 特性
+它以 Dan Koe 的文章《How to fix your entire life in 1 day》为第一份内容源，在 AI 工具中创建或继续一个名为 `Life-reset` 的对话。这个对话会持续保持人生导师模式，默认围绕目标、习惯、注意力、行动和复盘展开。
 
-- 提醒默认开启，可在对话中说“关闭人生重启提醒”或“开启人生重启提醒”。
-- 第一次提醒创建一个标题为 `Life-reset` 的新对话。
-- 后续提醒继续使用上一次对话；只有原对话不存在或不可访问时才新建。
-- 新对话在整个生命周期内保持人生导师模式，并优先处理个人成长相关内容。
-- 不拥有独立 Token，始终使用用户在对应 AI 工具中的账号、权限和 Token。
-- 仓库只保存原创摘要、行动问题和原文链接，不保存文章全文。
+## 它解决什么问题
 
-## 快速开始
+很多提醒只告诉你“该做什么”，却不会留下连续的思考空间。Life-reset 把提醒变成一段持续的对话：
 
-需要 Node.js 20 或更高版本：
+```text
+第一次提醒  → 创建 Life-reset 对话
+后续提醒    → 继续同一个对话
+对话被删除  → 创建新的 Life-reset 对话
+提醒已关闭  → 本轮不创建、不发送
+```
+
+提醒默认开启。你可以直接在对话中说：
+
+```text
+关闭人生重启提醒
+开启人生重启提醒
+```
+
+## 30 秒开始
+
+Skill 本身不要求 Node.js。最简单的使用方式是把根目录的 `SKILL.md` 复制到目标 AI 工具的 Skill / 自定义指令目录，然后把下面的提醒消息交给它：
+
+```text
+初始化 Life-reset。保持人生导师模式，默认启用主动提醒。
+第一次创建标题为 Life-reset 的新对话；以后优先继续同一对话，只有对话不存在或不可访问时才新建。
+```
+
+如果你需要本地校验或生成提醒，再使用 Node.js：
 
 ```bash
 npm test
@@ -21,31 +39,113 @@ npm run validate
 npm run generate -- --include-session-instruction
 ```
 
-不带 `--include-session-instruction` 时，只输出一次提醒消息：
+## 工作方式
 
-```bash
-npm run generate
-```
+Life-reset 分成三个部分：
 
-## 安装
+1. `SKILL.md`：告诉 AI 如何保持人生导师模式。
+2. `content/`：保存提醒内容、行动问题和原文链接。
+3. `adapters/`：说明如何接入不同 AI 工具的 Skill、任务和自动化。
 
-第一适配目标是 Codex。将根目录的 `SKILL.md` 复制到用户 Skill 目录，并参考 [`adapters/codex/README.md`](./adapters/codex/README.md) 配置周期性自动化。
+Skill 不拥有独立 Token，也不代替用户登录。调度、新建对话和继续对话都使用用户在对应平台已有的账号、权限和 Token。
 
-其他平台的接入说明位于 [`adapters/`](./adapters/)，当前以通用 Skill / 工作流契约为主，不假设平台提供相同的自动化 API。
+## 支持的平台
+
+| 平台 | Skill 接入 | 自动新建 / 继续对话 | 当前状态 |
+| --- | --- | --- | --- |
+| Codex | 支持 | 使用平台自动化配置 | 第一适配目标 |
+| Claude Code | 支持 | 使用平台工作流配置 | 通用适配 |
+| Kimi | 支持自定义指令时可用 | 取决于平台工作流 | 通用适配 |
+| WorkBuddy | 支持自定义指令时可用 | 取决于平台工作流 | 通用适配 |
+| 豆包 | 支持自定义指令时可用 | 取决于平台工作流 | 通用适配 |
+| Antigravity | 支持 | 使用平台 Skill / Plugin 能力 | 通用适配 |
+| Grok Bot | 支持自定义指令时可用 | 取决于平台工作流 | 通用适配 |
+
+不同平台需要分别安装。详见 [`adapters/`](./adapters/) 和 [`docs/platform-support.md`](./docs/platform-support.md)。
+
+## Codex
+
+将 `SKILL.md` 复制到 Codex 的 Skill 目录，然后参考 [`adapters/codex/README.md`](./adapters/codex/README.md) 配置周期性自动化。
+
+自动化需要遵守以下行为：
+
+- 第一次提醒创建标题恰好为 `Life-reset` 的新对话。
+- 后续提醒读取上一次成功提醒的对话 ID。
+- 对话仍可访问时，继续在原对话发送提醒。
+- 对话被删除或不可访问时，创建新的 `Life-reset` 对话。
+- 用户关闭提醒后，不创建新对话，也不发送新消息。
+
+可直接复制 [`Codex 自动化提示词`](./adapters/codex/automation-prompt.md)。
+
+## 其他平台
+
+每个平台的接入深度取决于它是否公开提供：
+
+- Skill / 自定义指令导入能力。
+- 定时或随机调度能力。
+- 创建新对话能力。
+- 向已有对话发送消息的能力。
+- 用户级状态保存能力。
+
+如果平台只支持 Skill，不支持主动新建对话，仍然可以手动运行提醒；仓库不会把平台没有提供的能力包装成原生功能。
+
+## 内容
+
+第一份内容是 Dan Koe 的《How to fix your entire life in 1 day》：
+
+- 通过反思当前不想继续的生活，明确新的方向。
+- 把方向拆成年度使命、月度项目和每日行动。
+- 用一个具体问题和一个最小行动结束每次提醒。
+
+原文：[letters.thedankoe.com/p/how-to-fix-your-entire-life-in-1](https://letters.thedankoe.com/p/how-to-fix-your-entire-life-in-1)
+
+仓库只保存原创摘要、思考问题、行动建议和来源链接，不保存或重新发布文章全文。
 
 ## 项目结构
 
-- `content/`：经过选择的提醒内容。
-- `schema/`：内容包契约。
-- `src/`：内容加载、提醒生成和提醒状态决策。
-- `scripts/`：本地校验和提醒生成命令。
-- `adapters/`：各 AI 工具的接入说明。
-- `docs/`：架构和平台支持说明。
+```text
+life-reset/
+├─ SKILL.md                    # AI 读取的持续会话指令
+├─ agents/openai.yaml          # Codex UI 元数据
+├─ content/                    # 提醒内容包
+├─ schema/                     # 内容格式契约
+├─ src/                        # 内容加载、提醒生成、状态决策
+├─ scripts/                    # 可选的本地校验和生成命令
+├─ adapters/                   # 各平台接入说明
+├─ docs/                       # 架构与实施文档
+└─ test/                       # 自动化测试
+```
 
-## 添加内容
+## 开发
 
-新增内容时只提交短摘要、思考问题、行动建议、来源链接和版权说明。不要复制来源文章全文。修改内容后运行 `npm run validate` 和 `npm test`。
+需要 Node.js 20 或更高版本才能运行本地开发命令：
 
-## 开源协作
+```bash
+npm test
+npm run validate
+npm run generate -- --include-session-instruction
+```
 
-欢迎提交新的平台适配说明、内容包改进和测试。平台适配必须明确说明真实支持的能力，并遵守用户 Token 和对话权限边界。
+修改提醒内容时，请同时更新来源链接和版权说明，并确保测试通过。
+
+## 安全与隐私
+
+- Skill 不读取或保存用户 Token。
+- Skill 不自动登录第三方平台。
+- 自动化只使用用户已有的平台权限。
+- 安装第三方 Skill 前，应先检查其脚本、外部请求和权限范围。
+
+## 参与贡献
+
+欢迎提交：
+
+- 新的平台适配说明。
+- 更清晰的提醒内容和行动问题。
+- 内容校验和状态决策测试。
+- 平台实际能力变化后的文档更新。
+
+新增适配器时，请明确写出真实支持的能力、需要的用户配置和降级方案，不要声明未经验证的私有 API。
+
+## License
+
+MIT License，详见 [`LICENSE`](./LICENSE)。
