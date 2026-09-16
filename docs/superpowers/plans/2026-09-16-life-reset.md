@@ -273,14 +273,14 @@ git commit -m "feat: generate life reset reminders"
 - Modify: `README.md`
 
 **Interfaces:**
-- `docs/architecture.md` documents `scheduled -> created|failed` and the fields `enabled`, `timezone`, `frequency`, `timeWindow`, `randomize`.
+- `docs/architecture.md` documents `scheduled -> skipped|sent|created|failed` and the fields `enabled`, `timezone`, `frequency`, `timeWindow`, `randomize`.
 - `adapters/codex/automation-prompt.md` is a copyable prompt that creates a new conversation and injects `buildSessionInstruction()` semantics plus the generated reminder.
 - Every adapter README clearly states whether the platform can persist the instruction or only place it in the first message.
 - Every adapter documents that it uses the user’s existing platform token and stores the reminder toggle plus last conversation reference in user-owned platform state.
 
 - [ ] **Step 1: Write the architecture document**
 
-Document Content Pack, Reminder Contract, Platform Adapter, the new-conversation data flow, state values `scheduled`, `sent`, `created`, `failed`, the default-enabled toggle, conversation reuse, fixed title `Life-reset`, user-token boundary, and no-remote-fetch boundary.
+Document Content Pack, Reminder Contract, Platform Adapter, the new-conversation data flow, state values `scheduled`, `skipped`, `sent`, `created`, `failed`, the default-enabled toggle, conversation reuse, fixed title `Life-reset`, user-token boundary, and no-remote-fetch boundary.
 
 - [ ] **Step 2: Write the Codex adapter**
 
