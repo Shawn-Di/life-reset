@@ -1,0 +1,12 @@
+{
+  "name": "life-reset",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A cross-platform AI skill for life reset reminders and mentor conversations.",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test",
+    "validate": "node scripts/validate-content.js",
+    "generate": "node scripts/generate-reminder.js"
+  }
+}
