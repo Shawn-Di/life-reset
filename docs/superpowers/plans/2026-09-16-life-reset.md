@@ -16,6 +16,10 @@
 - 第一版只围绕 Dan Koe 的文章《How to fix your entire life in 1 day》。
 - 新对话默认永久启用 Skill：在该对话生命周期内持续使用人生导师模式。
 - 默认主题路由：优先回答个人成长、目标、习惯、行动、复盘和人生方向相关问题。
+- 主动提醒默认开启，并支持在对话中通过提示词关闭或重新开启。
+- Skill 不拥有独立 Token；调度和对话操作始终使用用户在对应 AI 工具中的账号、权限和 Token。
+- 首次提醒创建 `Life-reset` 新对话；后续提醒优先继续同一对话，原对话不存在或不可访问时才创建新的 `Life-reset` 对话。
+- 每次新建的对话标题固定为 `Life-reset`。
 - 项目不抓取远程内容，不收录或重新发布文章全文。
 - 核心层不依赖任何具体平台。
 - 平台不支持会话级持久指令时，退化为首条消息中的明确模式声明。
@@ -67,6 +71,8 @@ coverage/
 - [ ] **Step 3: Write the Skill entrypoint**
 
 Create `SKILL.md` with YAML frontmatter `name: life-reset` and a discriminating description. Its instructions must state that the Skill is initialized by a newly created conversation, remains active for that conversation lifetime, prioritizes personal growth and mentoring, gives concrete actions, and answers unrelated user requests directly without forcing a growth interpretation.
+
+The entrypoint must also state that proactive reminders are enabled by default, that the user can say “关闭人生重启提醒” or “开启人生重启提醒”, and that the Skill uses the user’s existing platform identity rather than owning a separate token.
 
 - [ ] **Step 4: Add Codex UI metadata**
 
@@ -135,16 +141,20 @@ git commit -m "feat: add life reset content contract"
 **Files:**
 - Create: `src/content.js`
 - Create: `src/reminder.js`
+- Create: `src/reminder-state.js`
 - Create: `scripts/validate-content.js`
 - Create: `scripts/generate-reminder.js`
 - Test: `test/content.test.js`
 - Test: `test/reminder.test.js`
+- Test: `test/reminder-state.test.js`
 
 **Interfaces:**
 - `loadContent(filePath) -> { version: number, items: ContentItem[] }` throws an `Error` naming the invalid field when the content is malformed.
 - `findContent(pack, id) -> ContentItem` throws when the ID is missing.
 - `buildSessionInstruction() -> string` returns the persistent mentor-mode instruction.
 - `buildReminder(item) -> string` returns the user-visible Chinese reminder with title, prompt, action, and source URL.
+- `parseReminderCommand(text) -> 'enable' | 'disable' | null` parses Chinese and English enable/disable commands.
+- `decideDelivery(state, conversationExists) -> { type: 'skip' | 'send' | 'create', title: 'Life-reset' }` decides whether to skip, continue an existing conversation, or create a new conversation.
 
 - [ ] **Step 1: Write failing content tests**
 
@@ -207,19 +217,40 @@ Use this output shape:
 
 `scripts/generate-reminder.js` accepts `--id <id>` and optional `--include-session-instruction`; it loads the default content item, prints the session instruction first when requested, then prints the reminder. With no arguments it uses `life-reset-day-one`.
 
-- [ ] **Step 7: Run focused tests**
+- [ ] **Step 7: Write failing reminder-state tests**
+
+Add tests for default-enabled state, natural-language toggles, existing-conversation reuse, missing-conversation fallback, and the fixed title:
+
+```js
+assert.equal(parseReminderCommand('关闭人生重启提醒'), 'disable');
+assert.equal(parseReminderCommand('开启人生重启提醒'), 'enable');
+assert.deepEqual(decideDelivery({ enabled: true, conversationId: 'c1' }, true), {
+  type: 'send',
+  title: 'Life-reset'
+});
+assert.deepEqual(decideDelivery({ enabled: true, conversationId: 'c1' }, false), {
+  type: 'create',
+  title: 'Life-reset'
+});
+```
+
+- [ ] **Step 8: Implement reminder state decisions**
+
+Implement `parseReminderCommand` with explicit enable and disable phrases in Chinese and English. Treat missing `enabled` as `true`. Implement `decideDelivery` so disabled state returns `skip`, enabled state with an accessible prior conversation returns `send`, and enabled state without one returns `create`; every result includes the exact title `Life-reset`.
+
+- [ ] **Step 9: Run focused tests**
 
 Run: `npm test`
 
 Expected: all content and reminder tests PASS.
 
-- [ ] **Step 8: Run the CLI checks**
+- [ ] **Step 10: Run the CLI checks**
 
 Run: `npm run validate; npm run generate -- --include-session-instruction`
 
 Expected: validation succeeds and output includes the persistent session instruction, `人生重启提醒`, a question, an action, and the Dan Koe source URL.
 
-- [ ] **Step 9: Commit**
+- [ ] **Step 11: Commit**
 
 ```bash
 git add src scripts test
@@ -245,14 +276,15 @@ git commit -m "feat: generate life reset reminders"
 - `docs/architecture.md` documents `scheduled -> created|failed` and the fields `enabled`, `timezone`, `frequency`, `timeWindow`, `randomize`.
 - `adapters/codex/automation-prompt.md` is a copyable prompt that creates a new conversation and injects `buildSessionInstruction()` semantics plus the generated reminder.
 - Every adapter README clearly states whether the platform can persist the instruction or only place it in the first message.
+- Every adapter documents that it uses the user’s existing platform token and stores the reminder toggle plus last conversation reference in user-owned platform state.
 
 - [ ] **Step 1: Write the architecture document**
 
-Document Content Pack, Reminder Contract, Platform Adapter, the new-conversation data flow, state values `scheduled`, `created`, `failed`, and the no-remote-fetch boundary.
+Document Content Pack, Reminder Contract, Platform Adapter, the new-conversation data flow, state values `scheduled`, `sent`, `created`, `failed`, the default-enabled toggle, conversation reuse, fixed title `Life-reset`, user-token boundary, and no-remote-fetch boundary.
 
 - [ ] **Step 2: Write the Codex adapter**
 
-Document installation of `SKILL.md` into the user Skill directory and provide an automation prompt that creates a fresh conversation whose first message contains the session instruction and the reminder. State that new conversation creation is the success condition and no read receipt is required.
+Document installation of `SKILL.md` into the user Skill directory and provide an automation prompt that uses the user’s existing Codex identity. The first reminder creates a fresh conversation titled `Life-reset`; later reminders send into the saved conversation when it still exists, otherwise create a replacement with the same title. Include the enable/disable prompts, default-enabled behavior, session instruction, reminder, and no-read-receipt rule.
 
 - [ ] **Step 3: Write the generic adapter templates**
 
