@@ -13,16 +13,20 @@ The platform-neutral state is:
 ```json
 {
   "enabled": true,
-  "timezone": "Asia/Shanghai",
-  "frequency": "2/week",
-  "timeWindow": { "start": "09:00", "end": "21:00" },
-  "randomize": true,
+  "schedule": {
+    "intervalMinutes": 120,
+    "timezone": "user-local",
+    "start": "08:00",
+    "end": "22:00",
+    "userConfirmed": false
+  },
+  "lastReminderAt": null,
   "conversationId": null,
   "conversationTitle": "Life-reset"
 }
 ```
 
-`enabled` defaults to `true`. `conversationId` is the last conversation that received a reminder. `conversationTitle` is always `Life-reset` for newly created conversations.
+`enabled` defaults to `true`. The scheduler runs every two hours, but an adapter sends only when the current time falls inside the user's local `timeWindow`; the default is 08:00–22:00. `userConfirmed` records whether the user has answered the preferred-window question. `lastReminderAt` prevents reminders from being sent more frequently than the configured interval. `conversationId` is the last conversation that received a reminder. `conversationTitle` is always `Life-reset` for newly created conversations.
 
 ### Platform Adapter
 
@@ -34,6 +38,8 @@ The adapter uses the user's existing account, permissions, and token. The Skill 
 
 ```text
 scheduled
+   │
+   ├─ outside local time window ────→ skipped
    │
    ├─ enabled = false ───────────────→ skipped
    │
@@ -59,4 +65,4 @@ The default is enabled. The following natural-language commands update the user-
 - `关闭人生重启提醒` / `disable life-reset reminders` → `enabled: false`
 - `开启人生重启提醒` / `enable life-reset reminders` → `enabled: true`
 
-The adapter owns the actual persistence mechanism because each host provides different workflow and storage capabilities.
+When no preferred time window has been confirmed, ask the user for a local-time range first. Until the user answers, use the default 08:00–22:00 window and a two-hour interval. The adapter owns the actual persistence mechanism because each host provides different workflow and storage capabilities.

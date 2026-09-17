@@ -2,17 +2,53 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 
 const {
+  DEFAULT_SCHEDULE,
   decideDelivery,
   getDefaultState,
+  isReminderDue,
+  isWithinReminderWindow,
+  needsSchedulePreference,
   parseReminderCommand
 } = require('../src/reminder-state');
 
 test('reminders are enabled by default', () => {
   assert.deepEqual(getDefaultState(), {
     enabled: true,
+    schedule: DEFAULT_SCHEDULE,
     conversationId: null,
     conversationTitle: 'Life-reset'
   });
+});
+
+test('uses a two-hour local daytime schedule by default', () => {
+  assert.deepEqual(DEFAULT_SCHEDULE, {
+    intervalMinutes: 120,
+    start: '08:00',
+    end: '22:00',
+    timezone: 'user-local',
+    userConfirmed: false
+  });
+  assert.equal(isWithinReminderWindow(new Date(2026, 8, 17, 9, 0)), true);
+  assert.equal(isWithinReminderWindow(new Date(2026, 8, 17, 22, 0)), false);
+});
+
+test('asks for a preferred schedule until the user confirms one', () => {
+  assert.equal(needsSchedulePreference(getDefaultState()), true);
+  assert.equal(needsSchedulePreference({
+    schedule: { ...DEFAULT_SCHEDULE, userConfirmed: true }
+  }), false);
+});
+
+test('only sends a due reminder inside the local window', () => {
+  const localNow = new Date(2026, 8, 17, 9, 0);
+  const state = {
+    enabled: true,
+    schedule: { ...DEFAULT_SCHEDULE },
+    lastReminderAt: new Date(localNow.getTime() - 3 * 60 * 60 * 1000).toISOString()
+  };
+
+  assert.equal(isReminderDue(state, localNow), true);
+  assert.equal(isReminderDue(state, new Date(2026, 8, 17, 7, 0)), false);
 });
 
 test('parses Chinese and English reminder toggles', () => {

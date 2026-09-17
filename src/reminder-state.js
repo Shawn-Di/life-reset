@@ -1,11 +1,70 @@
 const CONVERSATION_TITLE = 'Life-reset';
+const DEFAULT_SCHEDULE = Object.freeze({
+  intervalMinutes: 120,
+  start: '08:00',
+  end: '22:00',
+  timezone: 'user-local',
+  userConfirmed: false
+});
 
 function getDefaultState() {
   return {
     enabled: true,
+    schedule: { ...DEFAULT_SCHEDULE },
     conversationId: null,
     conversationTitle: CONVERSATION_TITLE
   };
+}
+
+function needsSchedulePreference(state = {}) {
+  return state.schedule?.userConfirmed !== true;
+}
+
+function timeToMinutes(value) {
+  const match = typeof value === 'string' && /^(\d{2}):(\d{2})$/.exec(value);
+  if (!match) {
+    return null;
+  }
+
+  const hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  return hours < 24 && minutes < 60 ? hours * 60 + minutes : null;
+}
+
+function isWithinReminderWindow(localNow, schedule = DEFAULT_SCHEDULE) {
+  if (!(localNow instanceof Date) || Number.isNaN(localNow.getTime())) {
+    return false;
+  }
+
+  const start = timeToMinutes(schedule.start);
+  const end = timeToMinutes(schedule.end);
+  if (start === null || end === null || start === end) {
+    return false;
+  }
+
+  const current = localNow.getHours() * 60 + localNow.getMinutes();
+  return start < end
+    ? current >= start && current < end
+    : current >= start || current < end;
+}
+
+function isReminderDue(state = {}, localNow = new Date()) {
+  if (state.enabled === false) {
+    return false;
+  }
+
+  const schedule = { ...DEFAULT_SCHEDULE, ...(state.schedule || {}) };
+  if (!isWithinReminderWindow(localNow, schedule)) {
+    return false;
+  }
+
+  if (!state.lastReminderAt) {
+    return true;
+  }
+
+  const lastReminderAt = Date.parse(state.lastReminderAt);
+  return Number.isFinite(lastReminderAt)
+    && localNow.getTime() - lastReminderAt >= schedule.intervalMinutes * 60 * 1000;
 }
 
 function parseReminderCommand(text) {
@@ -42,7 +101,11 @@ function decideDelivery(state = {}, conversationExists = false) {
 
 module.exports = {
   CONVERSATION_TITLE,
+  DEFAULT_SCHEDULE,
   decideDelivery,
   getDefaultState,
+  isReminderDue,
+  isWithinReminderWindow,
+  needsSchedulePreference,
   parseReminderCommand
 };

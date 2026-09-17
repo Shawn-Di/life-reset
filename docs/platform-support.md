@@ -15,6 +15,8 @@ The core content pack and reminder generator are platform-neutral. Integration d
 
 No adapter claims private API support. If a platform cannot create a new conversation or send to an existing one, use the generated message manually or connect it to that platform's own workflow system.
 
+Scheduling defaults to a two-hour interval in the user's local timezone. Adapters must send only inside the configured daytime window, defaulting to 08:00–22:00. If the user has not confirmed a preferred window, ask for it first and temporarily use the default.
+
 Every adapter should preserve these rules:
 
 1. Reminders are enabled by default.
