@@ -7,7 +7,7 @@ This adapter uses the user's existing Codex account and permissions. `life-reset
 Install the standard Skill target with one command:
 
 ```bash
-npx skills add https://github.com/Shawn-Di/life-reset/tree/master/skills/life-reset -g -a codex --copy -y
+npx skills add Shawn-Di/life-reset -a codex
 ```
 
 Manual fallback:

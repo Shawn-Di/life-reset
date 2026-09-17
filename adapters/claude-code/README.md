@@ -3,7 +3,7 @@
 Install with one command:
 
 ```bash
-npx skills add https://github.com/Shawn-Di/life-reset/tree/master/skills/life-reset -g -a claude-code --copy -y
+npx skills add Shawn-Di/life-reset -a claude-code
 ```
 
 The repository also includes Claude Code plugin metadata. In Claude Code, add the repository as a marketplace and install `life-reset`, or copy `skills/life-reset/SKILL.md` into the host's user Skill directory. Configure the host's own scheduler to run `npm run generate -- --include-session-instruction` and deliver the output.

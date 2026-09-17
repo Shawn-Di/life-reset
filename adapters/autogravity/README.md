@@ -9,7 +9,7 @@ agy plugin install https://github.com/Shawn-Di/life-reset
 Portable Skill install:
 
 ```bash
-npx skills add https://github.com/Shawn-Di/life-reset/tree/master/skills/life-reset -g -a antigravity --copy -y
+npx skills add Shawn-Di/life-reset -a antigravity
 ```
 
 If neither is available, import or paste `skills/life-reset/SKILL.md` into AutoGravity's supported custom instruction or Skill area. Connect the generated reminder to AutoGravity's own workflow or scheduling feature when available.

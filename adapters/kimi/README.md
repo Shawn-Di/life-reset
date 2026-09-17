@@ -9,7 +9,7 @@ Kimi Code native install:
 Kimi Code CLI portable install:
 
 ```bash
-npx skills add https://github.com/Shawn-Di/life-reset/tree/master/skills/life-reset -g -a kimi-code-cli --copy -y
+npx skills add Shawn-Di/life-reset -a kimi-code-cli
 ```
 
 If neither is available, import or paste `skills/life-reset/SKILL.md` into Kimi's supported custom instruction or Skill area. Connect the generated reminder to Kimi's own workflow or scheduling feature when available.

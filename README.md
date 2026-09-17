@@ -27,10 +27,16 @@
 Skill 本身不要求 Node.js。支持通用 Agent Skills 标准的 CLI 可以直接安装标准入口：
 
 ```bash
-npx skills add https://github.com/Shawn-Di/life-reset/tree/master/skills/life-reset -g -a codex --copy -y
+npx skills add Shawn-Di/life-reset -a codex
 ```
 
-上面的 `npx skills` 是安装器，因此只有使用这条命令时才需要 Node.js 20+ 和 npm。也可以手动把 [`skills/life-reset/SKILL.md`](./skills/life-reset/SKILL.md) 复制到目标 AI 工具的 Skill / 自定义指令目录。
+上面的 `npx skills` 会自动发现仓库里的 `life-reset`。如果要全局安装，可以加上 `-g`；如果要跳过所有确认并使用复制模式，可以使用下面的完整写法：
+
+```bash
+npx skills add Shawn-Di/life-reset -g -a codex --copy -y
+```
+
+`npx skills` 是安装器，因此只有使用这条命令时才需要 Node.js 20+ 和 npm。也可以手动把 [`skills/life-reset/SKILL.md`](./skills/life-reset/SKILL.md) 复制到目标 AI 工具的 Skill / 自定义指令目录。
 
 安装后，把下面的提醒消息交给它：
 
@@ -54,7 +60,7 @@ npm run generate -- --include-session-instruction
 ### Codex CLI
 
 ```bash
-npx skills add https://github.com/Shawn-Di/life-reset/tree/master/skills/life-reset -g -a codex --copy -y
+npx skills add Shawn-Di/life-reset -a codex
 ```
 
 Codex App 也可以在 Plugins 面板中搜索 `life-reset` 后安装；周期性主动提醒需要再配置 Codex 自动化，见 [`adapters/codex/`](./adapters/codex/)。
@@ -62,7 +68,7 @@ Codex App 也可以在 Plugins 面板中搜索 `life-reset` 后安装；周期�
 ### Claude Code / CC
 
 ```bash
-npx skills add https://github.com/Shawn-Di/life-reset/tree/master/skills/life-reset -g -a claude-code --copy -y
+npx skills add Shawn-Di/life-reset -a claude-code
 ```
 
 如果使用 Claude Code 插件市场，也可以执行：
@@ -83,7 +89,7 @@ Kimi Code 原生安装命令：
 Kimi Code CLI 也可以使用通用安装器：
 
 ```bash
-npx skills add https://github.com/Shawn-Di/life-reset/tree/master/skills/life-reset -g -a kimi-code-cli --copy -y
+npx skills add Shawn-Di/life-reset -a kimi-code-cli
 ```
 
 ### WorkBuddy
@@ -111,7 +117,7 @@ agy plugin install https://github.com/Shawn-Di/life-reset
 也可以使用通用安装器：
 
 ```bash
-npx skills add https://github.com/Shawn-Di/life-reset/tree/master/skills/life-reset -g -a antigravity --copy -y
+npx skills add Shawn-Di/life-reset -a antigravity
 ```
 
 ### Grok Build / Grok Bot
@@ -119,7 +125,7 @@ npx skills add https://github.com/Shawn-Di/life-reset/tree/master/skills/life-re
 Grok Build CLI 可以使用通用安装器：
 
 ```bash
-npx skills add https://github.com/Shawn-Di/life-reset/tree/master/skills/life-reset -g -a grok --copy -y
+npx skills add Shawn-Di/life-reset -a grok
 ```
 
 Grok Bot 网页端目前没有可验证的 GitHub Skill 一键安装命令。若使用 Grok 官方插件市场，需要先在 `/marketplace` 中找到已发布的 `life-reset`；否则请导入 [`skills/life-reset/SKILL.md`](./skills/life-reset/SKILL.md) 到可用的自定义指令入口。
