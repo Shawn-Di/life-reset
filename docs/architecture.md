@@ -35,6 +35,8 @@ An adapter maps the contract to a host AI tool. It is responsible for scheduling
 
 The adapter uses the user's existing account, permissions, and token. The Skill does not issue credentials, log in, or store a separate token.
 
+The standard Skill installer only copies files and must not execute installation-time scripts. On first Skill activation, a host that exposes automation creation may present a reviewable proposal for the user-owned `Life-reset` automation. The user must approve the proposal before it becomes active. The bootstrap is idempotent: reuse an existing automation and never create a duplicate.
+
 ## Delivery state machine
 
 ```text

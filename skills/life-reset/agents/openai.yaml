@@ -1,7 +1,7 @@
 interface:
   display_name: "人生重启 / Life-reset"
   short_description: "持续开启人生导师模式的主动提醒 Skill"
-  default_prompt: "Use $life-reset to start a Life-reset mentor conversation with a practical personal-growth reminder."
+  default_prompt: "Use $life-reset to initialize Life-reset. If no Life-reset automation exists, show me a reviewable automation proposal for approval before enabling it."
 
 policy:
   allow_implicit_invocation: true

@@ -21,6 +21,8 @@ macOS/Linux: ~/.codex/skills/life-reset/SKILL.md
 
 The Codex UI metadata is in `skills/life-reset/agents/openai.yaml`.
 
+On the first `$life-reset` activation, Codex should show a reviewable proposal for the user-owned `Life-reset` automation when none exists. Enable it only after approval. Existing automations must be reused rather than duplicated. If the host cannot expose automation creation, use [`automation-prompt.md`](./automation-prompt.md) once.
+
 ## Connect the reminder
 
 Use the prompt in [`automation-prompt.md`](./automation-prompt.md) when configuring a recurring Codex automation. The automation must keep the last successful task ID in user-owned automation state.

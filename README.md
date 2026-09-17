@@ -38,6 +38,14 @@ npx skills add Shawn-Di/life-reset -g -a codex --copy -y
 
 `npx skills` 是安装器，因此只有使用这条命令时才需要 Node.js 20+ 和 npm。也可以手动把 [`skills/life-reset/SKILL.md`](./skills/life-reset/SKILL.md) 复制到目标 AI 工具的 Skill / 自定义指令目录。
 
+安装器只负责安全地复制 Skill，不会在安装过程中偷偷执行第三方脚本或修改账户设置。安装后第一次运行 `$life-reset` 时，Codex 会在返回的对话中显示一个待审核的 `Life-reset` 自动化建议；你确认后才启用。如果已经存在自动化则直接复用，不会重复创建。
+
+安装后的首次初始化请求如下，用户可以先审核时间段、频率和提醒内容：
+
+```text
+初始化 Life-reset，并显示一个待我审核的自动化建议：按我的当地时间每两个小时提醒一次，默认只在 08:00–22:00 发送；首次先询问我希望的提醒时间段。确认后再启用自动化。
+```
+
 安装后，把下面的提醒消息交给它：
 
 ```text
