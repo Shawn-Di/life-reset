@@ -22,11 +22,12 @@ The platform-neutral state is:
   },
   "lastReminderAt": null,
   "conversationId": null,
-  "conversationTitle": "Life-reset"
+  "conversationTitle": "Life-reset",
+  "conversationPhase": "silent"
 }
 ```
 
-`enabled` defaults to `true`. The scheduler runs every two hours, but an adapter sends only when the current time falls inside the user's local `timeWindow`; the default is 08:00–22:00. `userConfirmed` records whether the user has answered the preferred-window question. `lastReminderAt` prevents reminders from being sent more frequently than the configured interval. `conversationId` is the last conversation that received a reminder. `conversationTitle` is always `Life-reset` for newly created conversations.
+`enabled` defaults to `true`. The scheduler runs every two hours, but an adapter sends only when the current time falls inside the user's local window; the default is 08:00–22:00. `userConfirmed` records whether the user has answered the preferred-window question. `lastReminderAt` prevents reminders from being sent more frequently than the configured interval. `conversationId` is the last conversation that received a reminder. `conversationTitle` is always `Life-reset` for newly created conversations. `conversationPhase` tracks the short feedback loop after a reminder.
 
 ### Platform Adapter
 
@@ -57,6 +58,19 @@ When the result is `sent`, keep the existing `conversationId`. When the result i
 The first reminder creates a new conversation titled `Life-reset`. Every later reminder checks the saved conversation reference first. If it still exists and is accessible, the reminder is sent into that conversation. If it was deleted or cannot be accessed, the adapter creates a replacement titled `Life-reset`.
 
 The first message in every newly created conversation contains the persistent life-reset mentor instruction followed by the reminder. The instruction remains active for that conversation lifetime. A host that cannot persist conversation-level instructions must repeat the instruction when it creates a replacement conversation.
+
+### Reminder interaction loop
+
+```text
+reminder delivered
+        │
+        ▼
+awaiting-feedback ── user gives a short report ──→ one-sentence tactical correction
+        │                                             │
+        └──────── no report / unrelated question ─────┴──→ silent until next reminder
+```
+
+The reminder itself contains `【致命拷问】` and `【即刻行动】`. The tactical correction is one sentence. The loop never claims that the user read the reminder, and it does not pressure the user to respond.
 
 ## User controls
 

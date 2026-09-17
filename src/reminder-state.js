@@ -1,4 +1,8 @@
 const CONVERSATION_TITLE = 'Life-reset';
+const CONVERSATION_PHASES = Object.freeze({
+  SILENT: 'silent',
+  AWAITING_FEEDBACK: 'awaiting-feedback'
+});
 const DEFAULT_SCHEDULE = Object.freeze({
   intervalMinutes: 120,
   start: '08:00',
@@ -12,8 +16,27 @@ function getDefaultState() {
     enabled: true,
     schedule: { ...DEFAULT_SCHEDULE },
     conversationId: null,
-    conversationTitle: CONVERSATION_TITLE
+    conversationTitle: CONVERSATION_TITLE,
+    conversationPhase: CONVERSATION_PHASES.SILENT
   };
+}
+
+function markReminderDelivered(state = {}) {
+  return {
+    ...state,
+    conversationPhase: CONVERSATION_PHASES.AWAITING_FEEDBACK
+  };
+}
+
+function decideFeedback(state = {}, feedbackReceived = false) {
+  if (
+    state.conversationPhase !== CONVERSATION_PHASES.AWAITING_FEEDBACK
+    || !feedbackReceived
+  ) {
+    return { type: 'silent', phase: CONVERSATION_PHASES.SILENT };
+  }
+
+  return { type: 'tactical-correction', phase: CONVERSATION_PHASES.SILENT };
 }
 
 function needsSchedulePreference(state = {}) {
@@ -101,11 +124,14 @@ function decideDelivery(state = {}, conversationExists = false) {
 
 module.exports = {
   CONVERSATION_TITLE,
+  CONVERSATION_PHASES,
   DEFAULT_SCHEDULE,
+  decideFeedback,
   decideDelivery,
   getDefaultState,
   isReminderDue,
   isWithinReminderWindow,
+  markReminderDelivered,
   needsSchedulePreference,
   parseReminderCommand
 };

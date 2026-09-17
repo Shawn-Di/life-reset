@@ -9,10 +9,10 @@ function buildReminder(item) {
 
 主题：${item.title}
 
-今天想一想：
+【致命拷问】
 ${item.prompt}
 
-今天行动：
+【即刻行动】
 ${item.action}
 
 简要背景：

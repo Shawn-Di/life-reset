@@ -2,11 +2,14 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 
 const {
+  CONVERSATION_PHASES,
   DEFAULT_SCHEDULE,
+  decideFeedback,
   decideDelivery,
   getDefaultState,
   isReminderDue,
   isWithinReminderWindow,
+  markReminderDelivered,
   needsSchedulePreference,
   parseReminderCommand
 } = require('../src/reminder-state');
@@ -16,7 +19,25 @@ test('reminders are enabled by default', () => {
     enabled: true,
     schedule: DEFAULT_SCHEDULE,
     conversationId: null,
-    conversationTitle: 'Life-reset'
+    conversationTitle: 'Life-reset',
+    conversationPhase: 'silent'
+  });
+});
+
+test('uses the reminder feedback state machine', () => {
+  assert.equal(markReminderDelivered({}).conversationPhase, 'awaiting-feedback');
+
+  const awaitingFeedback = {
+    conversationPhase: CONVERSATION_PHASES.AWAITING_FEEDBACK
+  };
+
+  assert.deepEqual(decideFeedback(awaitingFeedback, false), {
+    type: 'silent',
+    phase: 'silent'
+  });
+  assert.deepEqual(decideFeedback(awaitingFeedback, true), {
+    type: 'tactical-correction',
+    phase: 'silent'
   });
 });
 
