@@ -71,6 +71,24 @@ function isWithinReminderWindow(localNow, schedule = DEFAULT_SCHEDULE) {
     : current >= start || current < end;
 }
 
+function isReminderSlot(localNow, schedule = DEFAULT_SCHEDULE) {
+  if (!(localNow instanceof Date) || Number.isNaN(localNow.getTime())) {
+    return false;
+  }
+
+  const start = timeToMinutes(schedule.start);
+  const end = timeToMinutes(schedule.end);
+  const interval = Number(schedule.intervalMinutes);
+  if (start === null || end === null || !Number.isFinite(interval) || interval <= 0) {
+    return false;
+  }
+
+  const current = localNow.getHours() * 60 + localNow.getMinutes();
+  const elapsed = current >= start ? current - start : current + 1440 - start;
+  const windowLength = start < end ? end - start : end + 1440 - start;
+  return elapsed >= 0 && elapsed < windowLength && elapsed % interval === 0;
+}
+
 function isReminderDue(state = {}, localNow = new Date()) {
   if (state.enabled === false) {
     return false;
@@ -78,6 +96,9 @@ function isReminderDue(state = {}, localNow = new Date()) {
 
   const schedule = { ...DEFAULT_SCHEDULE, ...(state.schedule || {}) };
   if (!isWithinReminderWindow(localNow, schedule)) {
+    return false;
+  }
+  if (!isReminderSlot(localNow, schedule)) {
     return false;
   }
 
@@ -130,6 +151,7 @@ module.exports = {
   decideDelivery,
   getDefaultState,
   isReminderDue,
+  isReminderSlot,
   isWithinReminderWindow,
   markReminderDelivered,
   needsSchedulePreference,

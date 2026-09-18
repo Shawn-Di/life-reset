@@ -35,7 +35,7 @@ An adapter maps the contract to a host AI tool. It is responsible for scheduling
 
 The adapter uses the user's existing account, permissions, and token. The Skill does not issue credentials, log in, or store a separate token.
 
-The standard Skill installer only copies files and must not execute installation-time scripts. On first Skill activation, a host that exposes automation creation may present a reviewable proposal for the user-owned `Life-reset` automation. The user must approve the proposal before it becomes active. The bootstrap is idempotent: reuse an existing automation and never create a duplicate.
+The standard Skill installer only copies files and must not execute installation-time scripts. On first Skill activation, a host that exposes automation listing and creation may present one reviewable proposal for the user-owned `Life-reset` automation. The user must approve the proposal before it becomes active. The bootstrap is idempotent: use the exact name `Life-reset` and key `life-reset-v1`, reuse one existing automation, and pause duplicates rather than creating another. See [`automation-contract.md`](./automation-contract.md).
 
 ## Delivery state machine
 
@@ -59,7 +59,7 @@ When the result is `sent`, keep the existing `conversationId`. When the result i
 
 The first reminder creates a new conversation titled `Life-reset`. Every later reminder checks the saved conversation reference first. If it still exists and is accessible, the reminder is sent into that conversation. If it was deleted or cannot be accessed, the adapter creates a replacement titled `Life-reset`.
 
-The installed Skill instructions provide the persistent life-reset mentor behavior. A newly created conversation must receive only the two-line reminder; it must not receive a separate mode-initialization message. There is exactly one active Life-reset automation, and adapters must reuse or update it rather than create duplicates.
+The installed Skill instructions provide the persistent life-reset mentor behavior. A newly created conversation must receive only the two-line reminder; it must not receive a separate mode-initialization message. There is exactly one active Life-reset automation per host, even when the saved conversation is replaced.
 
 ### Reminder interaction loop
 

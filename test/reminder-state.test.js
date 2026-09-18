@@ -8,6 +8,7 @@ const {
   decideDelivery,
   getDefaultState,
   isReminderDue,
+  isReminderSlot,
   isWithinReminderWindow,
   markReminderDelivered,
   needsSchedulePreference,
@@ -61,7 +62,7 @@ test('asks for a preferred schedule until the user confirms one', () => {
 });
 
 test('only sends a due reminder inside the local window', () => {
-  const localNow = new Date(2026, 8, 17, 9, 0);
+  const localNow = new Date(2026, 8, 17, 10, 0);
   const state = {
     enabled: true,
     schedule: { ...DEFAULT_SCHEDULE },
@@ -69,7 +70,14 @@ test('only sends a due reminder inside the local window', () => {
   };
 
   assert.equal(isReminderDue(state, localNow), true);
+  assert.equal(isReminderDue(state, new Date(2026, 8, 17, 9, 0)), false);
   assert.equal(isReminderDue(state, new Date(2026, 8, 17, 7, 0)), false);
+});
+
+test('aligns reminders to the configured start minute', () => {
+  assert.equal(isReminderSlot(new Date(2026, 8, 17, 8, 0)), true);
+  assert.equal(isReminderSlot(new Date(2026, 8, 17, 9, 0)), false);
+  assert.equal(isReminderSlot(new Date(2026, 8, 17, 10, 0)), true);
 });
 
 test('parses Chinese and English reminder toggles', () => {

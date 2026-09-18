@@ -179,6 +179,10 @@ Skill 不拥有独立 Token，也不代替用户登录。调度、新建对话�
 
 不同平台需要分别安装。安装能力和主动提醒能力是两件事：能安装 Skill，不代表平台一定允许 Skill 自己创建对话或定时运行。详见 [`adapters/`](./adapters/) 和 [`docs/platform-support.md`](./docs/platform-support.md)。
 
+### 跨平台防重复自动化
+
+所有平台统一使用自动化名称 `Life-reset` 和标识 `life-reset-v1`。安装或首次启用时先查找现有自动化：没有才创建，有一条就更新复用，有多条就保留一条并暂停重复项。对话被删除时只新建对话，不新建自动化。具体规则见 [`automation-contract.md`](./docs/automation-contract.md)。
+
 ## Codex
 
 使用上面的 Codex 一条命令安装，或将 [`skills/life-reset/SKILL.md`](./skills/life-reset/SKILL.md) 复制到 Codex 的 Skill 目录，然后参考 [`adapters/codex/README.md`](./adapters/codex/README.md) 配置周期性自动化。
