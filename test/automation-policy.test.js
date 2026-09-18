@@ -30,3 +30,9 @@ test('reuses the oldest active automation and identifies duplicates', () => {
     key: AUTOMATION_KEY
   });
 });
+
+test('recognizes the key in an automation prompt', () => {
+  assert.equal(reconcileAutomations([
+    { id: 'prompt-match', name: 'Reminder', prompt: 'key: life-reset-v1' }
+  ]).canonicalId, 'prompt-match');
+});

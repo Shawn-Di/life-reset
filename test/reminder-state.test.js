@@ -21,7 +21,8 @@ test('reminders are enabled by default', () => {
     schedule: DEFAULT_SCHEDULE,
     conversationId: null,
     conversationTitle: 'Life-reset',
-    conversationPhase: 'silent'
+    conversationPhase: 'silent',
+    lastReminderAt: null
   });
 });
 

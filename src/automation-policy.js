@@ -2,14 +2,19 @@ const AUTOMATION_NAME = 'Life-reset';
 const AUTOMATION_KEY = 'life-reset-v1';
 const INACTIVE_STATUSES = new Set(['disabled', 'inactive', 'paused']);
 
-function isActive(automation = {}) {
-  return !INACTIVE_STATUSES.has(String(automation.status || '').toLowerCase());
+const isActive = ({ status } = {}) =>
+  !INACTIVE_STATUSES.has(String(status || '').toLowerCase());
+
+function isLifeResetAutomation({ name, key, metadata, prompt } = {}) {
+  return name === AUTOMATION_NAME
+    || key === AUTOMATION_KEY
+    || metadata?.lifeResetKey === AUTOMATION_KEY
+    || prompt?.includes(AUTOMATION_KEY);
 }
 
-function isLifeResetAutomation(automation = {}) {
-  return automation.name === AUTOMATION_NAME
-    || automation.key === AUTOMATION_KEY
-    || automation.metadata?.lifeResetKey === AUTOMATION_KEY;
+function createdAt(automation, index) {
+  const value = Number(automation.createdAt);
+  return Number.isFinite(value) ? value : Number.MAX_SAFE_INTEGER + index;
 }
 
 function reconcileAutomations(automations = []) {
@@ -18,14 +23,8 @@ function reconcileAutomations(automations = []) {
     .filter(isActive)
     .map((automation, index) => ({ automation, index }));
 
-  matches.sort((left, right) => {
-    const leftCreatedAt = Number(left.automation.createdAt);
-    const rightCreatedAt = Number(right.automation.createdAt);
-    if (Number.isFinite(leftCreatedAt) && Number.isFinite(rightCreatedAt)) {
-      return leftCreatedAt - rightCreatedAt;
-    }
-    return left.index - right.index;
-  });
+  matches.sort((left, right) =>
+    createdAt(left.automation, left.index) - createdAt(right.automation, right.index));
 
   if (matches.length === 0) {
     return {
@@ -37,10 +36,11 @@ function reconcileAutomations(automations = []) {
     };
   }
 
+  const [canonical, ...duplicates] = matches;
   return {
     action: 'reuse',
-    canonicalId: matches[0].automation.id || null,
-    duplicateIds: matches.slice(1)
+    canonicalId: canonical.automation.id || null,
+    duplicateIds: duplicates
       .map(({ automation }) => automation.id)
       .filter(Boolean),
     name: AUTOMATION_NAME,

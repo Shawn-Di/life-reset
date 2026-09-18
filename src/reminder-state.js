@@ -17,7 +17,8 @@ function getDefaultState() {
     schedule: { ...DEFAULT_SCHEDULE },
     conversationId: null,
     conversationTitle: CONVERSATION_TITLE,
-    conversationPhase: CONVERSATION_PHASES.SILENT
+    conversationPhase: CONVERSATION_PHASES.SILENT,
+    lastReminderAt: null
   };
 }
 
@@ -49,44 +50,46 @@ function timeToMinutes(value) {
     return null;
   }
 
-  const hours = Number(match[1]);
-  const minutes = Number(match[2]);
+  const [hours, minutes] = match.slice(1).map(Number);
   return hours < 24 && minutes < 60 ? hours * 60 + minutes : null;
 }
 
-function isWithinReminderWindow(localNow, schedule = DEFAULT_SCHEDULE) {
+function schedulePosition(localNow, schedule) {
   if (!(localNow instanceof Date) || Number.isNaN(localNow.getTime())) {
-    return false;
-  }
-
-  const start = timeToMinutes(schedule.start);
-  const end = timeToMinutes(schedule.end);
-  if (start === null || end === null || start === end) {
-    return false;
-  }
-
-  const current = localNow.getHours() * 60 + localNow.getMinutes();
-  return start < end
-    ? current >= start && current < end
-    : current >= start || current < end;
-}
-
-function isReminderSlot(localNow, schedule = DEFAULT_SCHEDULE) {
-  if (!(localNow instanceof Date) || Number.isNaN(localNow.getTime())) {
-    return false;
+    return null;
   }
 
   const start = timeToMinutes(schedule.start);
   const end = timeToMinutes(schedule.end);
   const interval = Number(schedule.intervalMinutes);
-  if (start === null || end === null || !Number.isFinite(interval) || interval <= 0) {
-    return false;
+  if (
+    start === null
+    || end === null
+    || start === end
+    || !Number.isInteger(interval)
+    || interval <= 0
+  ) {
+    return null;
   }
 
   const current = localNow.getHours() * 60 + localNow.getMinutes();
   const elapsed = current >= start ? current - start : current + 1440 - start;
   const windowLength = start < end ? end - start : end + 1440 - start;
-  return elapsed >= 0 && elapsed < windowLength && elapsed % interval === 0;
+  return { elapsed, interval, windowLength };
+}
+
+function isWithinReminderWindow(localNow, schedule = DEFAULT_SCHEDULE) {
+  const position = schedulePosition(localNow, schedule);
+  return Boolean(position && position.elapsed < position.windowLength);
+}
+
+function isReminderSlot(localNow, schedule = DEFAULT_SCHEDULE) {
+  const position = schedulePosition(localNow, schedule);
+  return Boolean(
+    position
+    && position.elapsed < position.windowLength
+    && position.elapsed % position.interval === 0
+  );
 }
 
 function isReminderDue(state = {}, localNow = new Date()) {
@@ -95,9 +98,6 @@ function isReminderDue(state = {}, localNow = new Date()) {
   }
 
   const schedule = { ...DEFAULT_SCHEDULE, ...(state.schedule || {}) };
-  if (!isWithinReminderWindow(localNow, schedule)) {
-    return false;
-  }
   if (!isReminderSlot(localNow, schedule)) {
     return false;
   }
