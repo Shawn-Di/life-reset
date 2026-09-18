@@ -7,6 +7,7 @@
   "scripts": {
     "test": "node --test",
     "validate": "node scripts/validate-content.js",
-    "generate": "node scripts/generate-reminder.js"
+    "generate": "node scripts/generate-reminder.js",
+    "adapter-setup": "node scripts/print-adapter-setup.js"
   }
 }

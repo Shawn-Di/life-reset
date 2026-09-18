@@ -53,6 +53,16 @@ npx skills add Shawn-Di/life-reset -g -a codex --copy -y
 第一次创建标题为 Life-reset 的新对话；以后优先继续同一对话，只有对话不存在或不可访问时才新建。
 ```
 
+其他平台由用户手动配置时，可以直接生成对应平台的一次性自动化配置提示：
+
+```bash
+npm run adapter-setup -- --platform workbuddy
+npm run adapter-setup -- --platform cc
+npm run adapter-setup -- --platform autogravity
+```
+
+支持 `codex`、`cc`、`workbuddy`、`autogravity`、`kimi`、`doubao` 和 `grok`。Skill 本身仍然不要求 Node.js；这个命令只是帮助手动配置平台自动化。
+
 如果你需要本地校验或生成提醒，再使用 Node.js：
 
 ```bash

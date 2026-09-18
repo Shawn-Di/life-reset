@@ -7,6 +7,8 @@ name: Life-reset
 key: life-reset-v1
 ```
 
+The repository exposes the same contract through `src/platform-adapters.js`. Run `npm run adapter-setup -- --platform <name>` to print a platform-specific setup prompt. This is an optional helper for manual configuration; installing the Skill does not require Node.js.
+
 There must be one active automation per user and platform. The Skill itself is reusable across conversations; the scheduler is not. An interval, a time slot, or a conversation must never create another automation.
 
 ## Setup and repair

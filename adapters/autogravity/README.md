@@ -12,6 +12,12 @@ Portable Skill install:
 npx skills add Shawn-Di/life-reset -a antigravity
 ```
 
+The repository can print the canonical AutoGravity setup prompt with:
+
+```bash
+npm run adapter-setup -- --platform autogravity
+```
+
 If neither is available, import or paste `skills/life-reset/SKILL.md` into AutoGravity's supported custom instruction or Skill area. Connect the generated reminder to one AutoGravity workflow or scheduling rule when available.
 
 Use the user's existing AutoGravity identity and token. Reminders are enabled by default and can be changed with “关闭人生重启提醒” or “开启人生重启提醒”. AutoGravity must have exactly one active automation named `Life-reset` with key `life-reset-v1`:

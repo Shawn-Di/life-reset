@@ -6,6 +6,12 @@ When the WorkBuddy `gh skill` preview is available, install with one command:
 gh skill install Shawn-Di/life-reset skills/life-reset --dir .workbuddy/skills
 ```
 
+The repository can print the canonical WorkBuddy setup prompt with:
+
+```bash
+npm run adapter-setup -- --platform workbuddy
+```
+
 Otherwise, upload the repository release ZIP in WorkBuddy's Skill Marketplace, or import `skills/life-reset/SKILL.md` into its supported custom instruction or Skill area. Connect the generated reminder to one WorkBuddy workflow or scheduling rule when available.
 
 Use the user's existing WorkBuddy identity and token. Reminders are enabled by default and can be changed with “关闭人生重启提醒” or “开启人生重启提醒”. WorkBuddy must have exactly one active automation named `Life-reset` with key `life-reset-v1`:
