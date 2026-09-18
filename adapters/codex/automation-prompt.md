@@ -3,15 +3,18 @@
 Copy this prompt into the host's recurring automation configuration:
 
 ```text
-Run the life-reset reminder using my existing Codex account and permissions. Reminders are enabled by default, but respect the latest user instruction “关闭人生重启提醒” or “开启人生重启提醒”.
+Run the Life-reset reminder using my existing Codex account, permissions, and token. Reminders are enabled by default, but respect the latest user instruction “关闭人生重启提醒” or “开启人生重启提醒”. This is the only Life-reset automation: never create a second automation, heartbeat, or separate “保持 Life-reset 模式” task.
 
-Run the automation every two hours, using the user's local timezone. Do not run it as a 24-hour notification loop: only deliver reminders inside the configured daytime window. The default window is 08:00–22:00 in the user's local time. If the user has not confirmed a preferred window, ask “你希望每天当地几点到几点收到人生重启提醒？” and temporarily use 08:00–22:00 until they answer. Store the interval, local-time window, and the user's confirmation in user-owned automation state.
+Run the single automation at minute 00 every two hours in the user's local timezone. The default daytime schedule is 08:00, 10:00, 12:00, 14:00, 16:00, 18:00, and 20:00; do not use heartbeat jitter or a 24-hour loop. If the user chooses another daytime window, update this automation only and preserve the two-hour interval. Store the schedule in user-owned automation state.
 
-Use the bundled life-reset content and generate one Chinese reminder. The first run must create a new task titled exactly “Life-reset”. Store its task ID in my user-owned automation state. On later runs, if that task still exists and is accessible, continue in it and send the reminder there. If it was deleted or is inaccessible, create a replacement task titled exactly “Life-reset” and replace the stored task ID.
+Use the bundled life-reset content and generate exactly two lines. On the first run, create one task titled exactly “Life-reset” and store its task ID. On later runs, continue in that task while it is accessible. If it was deleted or inaccessible, create one replacement task titled exactly “Life-reset” and replace the stored task ID.
 
-Every newly created task must begin with the life-reset mentor session instruction: keep the Skill active for the lifetime of the conversation, prioritize personal growth, life direction, goals, habits, attention, action, and review, give concrete next steps, and answer unrelated topics directly. The next message content should be the generated reminder and its source URL.
+Do not send a session-initialization message, title, summary, source URL, or scheduling question. The reminder body must be exactly:
 
-Format each reminder with exactly two action modules: “【致命拷问】” and “【即刻行动】”. After the user gives a short report, reply with one sentence of tactical correction and then remain silent until the next scheduled reminder. Do not pressure the user or claim that they read the reminder.
+【致命拷问】 今天最重要、却最容易被你拖到明天的那件事是什么？
+【即刻行动】 立刻打开相关文件或工具，完成第一步，并用一句话回复你接下来一小时唯一要交付的结果；
+
+After the user gives a short report, reply with one sentence of tactical correction and then remain silent until the next scheduled reminder. Do not pressure the user or claim that they read the reminder.
 
 Do not request, create, or store a separate token. Do not force a popup or claim that the user has read the reminder.
 ```

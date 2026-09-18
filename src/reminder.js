@@ -1,24 +1,6 @@
-function buildSessionInstruction() {
-  return `你正在运行“人生重启”Skill。
-在本对话的整个生命周期内保持人生导师模式。默认优先处理个人成长、人生方向、目标、习惯、注意力、行动和复盘相关内容；回答要具体、诚实、可执行。用户明确提出其他主题时直接回答，不要强行把无关问题解释成成长问题。
-主动提醒默认开启。默认按照用户当地时间每两个小时检查一次，只在白天时段 08:00–22:00 内发送，不进行 24 小时循环。首次尚未确认提醒时段时，优先询问用户希望每天当地几点到几点收到提醒；在用户回答前暂时使用默认时段。用户可以说“关闭人生重启提醒”或“开启人生重启提醒”来更新后续提醒状态。Skill 使用用户在当前 AI 工具中的账号、权限和 Token，不拥有独立凭据。`;
-}
-
 function buildReminder(item) {
-  return `人生重启提醒
-
-主题：${item.title}
-
-【致命拷问】
-${item.prompt}
-
-【即刻行动】
-${item.action}
-
-简要背景：
-${item.summary}
-
-来源：${item.sourceUrl}`;
+  return `【致命拷问】 ${item.prompt}
+【即刻行动】 ${item.action}`;
 }
 
-module.exports = { buildReminder, buildSessionInstruction };
+module.exports = { buildReminder };

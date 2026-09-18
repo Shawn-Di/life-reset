@@ -58,7 +58,7 @@ npx skills add Shawn-Di/life-reset -g -a codex --copy -y
 ```bash
 npm test
 npm run validate
-npm run generate -- --include-session-instruction
+npm run generate
 ```
 
 ## 各平台一条命令安装
@@ -168,11 +168,11 @@ Skill 不拥有独立 Token，也不代替用户登录。调度、新建对话�
 
 在用户回答前暂时使用默认时段；用户确认后，适配器把时段和时区保存在用户自己的自动化状态中。
 
-提醒内容采用简洁的两段式：
+提醒内容只保留下面两行：
 
 ```text
-【致命拷问】一个直接的反思问题
-【即刻行动】一个两分钟内可以开始的行动或简短汇报
+【致命拷问】今天最重要、却最容易被你拖到明天的那件事是什么？
+【即刻行动】立刻打开相关文件或工具，完成第一步，并用一句话回复你接下来一小时唯一要交付的结果；
 ```
 
 用户完成行动并反馈后，Life-reset 只给出一句战术修正，然后保持静默，直到下一轮提醒；不会强迫用户回复或声称用户已经阅读。
@@ -192,7 +192,7 @@ Skill 不拥有独立 Token，也不代替用户登录。调度、新建对话�
 - 用户关闭提醒后，不创建新对话，也不发送新消息。
 - 每两个小时检查一次，但只在用户当地时间的提醒窗口内发送。
 
-可直接复制 [`Codex 自动化提示词`](./adapters/codex/automation-prompt.md)。
+可直接复制 [`Codex 自动化提示词`](./adapters/codex/automation-prompt.md)。Codex 中只保留一个 `Life-reset` 自动化；如果用户修改提醒时段，应更新原自动化，不要新建第二个。
 
 ## 其他平台
 
@@ -244,7 +244,7 @@ life-reset/
 ```bash
 npm test
 npm run validate
-npm run generate -- --include-session-instruction
+npm run generate
 ```
 
 修改提醒内容时，请同时更新来源链接和版权说明，并确保测试通过。
