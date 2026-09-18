@@ -19,5 +19,5 @@ Use the user's existing Claude Code identity and token. Reminders are enabled by
 Use this as the one-time scheduler setup prompt:
 
 ```text
-配置或更新唯一的 Life-reset 自动化（key: life-reset-v1）。先查找现有自动化；没有时创建一条并等待审核，有一条时复用，有多条时保留最早的一条并暂停重复项。每两小时按用户当地时间整点运行，默认 08:00–20:00。保存一个 Life-reset 对话 ID并持续复用；对话被删除后只新建一个同名对话，不创建新的自动化。提醒只发送两行正文，不发送初始化模式消息。
+⚙️ 配置唯一的 Life-reset（life-reset-v1）。🔍 0 条→创建并审核；1 条→复用；多条→保留最早、暂停其余。⏰ 当地时间每两小时整点，默认 08:00–20:00；首次先确认提醒时段。💬 只复用一个 Life-reset 对话；对话被删后才新建对话，不新建自动化。🔔 默认开启。📝 只发送截图中的两行，不发送初始化文字。
 ```

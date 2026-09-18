@@ -42,13 +42,15 @@ function getPlatformAdapter(platform) {
 function buildAutomationSetupPrompt(platform) {
   const { displayName } = getPlatformAdapter(platform);
   return [
-    `在${displayName}中配置或更新唯一的 ${AUTOMATION_NAME} 自动化（key: ${AUTOMATION_KEY}）。`,
-    '先列出现有自动化：没有时创建一条并等待用户审核；有一条时更新并复用；',
-    '有多条时保留最早的一条并暂停重复项。不要按提醒时间创建多条自动化，也不要创建 heartbeat。',
-    '按用户当地时间每两小时整点运行，默认 08:00–20:00。',
-    `保存一个 ${AUTOMATION_NAME} 对话 ID 并持续复用；对话被删除或不可访问时只新建一个同名对话，不创建新的自动化。`,
-    '提醒正文只发送两行，不发送 Skill 初始化、标题、摘要、来源或时间段问题。'
-  ].join('');
+    `⚙️ ${displayName}：配置唯一的 ${AUTOMATION_NAME}（${AUTOMATION_KEY}）。`,
+    '🔍 先查找：0 条→创建并审核；1 条→复用；多条→保留最早、暂停其余。',
+    '⏰ 按当地时间每两小时整点运行，默认 08:00–20:00；首次先确认提醒时段。',
+    `💬 只复用一个 ${AUTOMATION_NAME} 对话；对话被删后才新建对话，不新建自动化。`,
+    '🔔 默认开启，支持“关闭人生重启提醒 / 开启人生重启提醒”。',
+    '📝 提醒只发送：',
+    '【致命拷问】 今天最重要、却最容易被你拖到明天的那件事是什么？',
+    '【即刻行动】 立刻打开相关文件或工具，完成第一步，并用一句话回复你接下来一小时唯一要交付的结果；'
+  ].join('\n');
 }
 
 module.exports = {

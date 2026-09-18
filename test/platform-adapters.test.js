@@ -18,8 +18,10 @@ test('exposes a setup prompt for each supported platform', () => {
   const prompt = buildAutomationSetupPrompt('autogravity');
 
   assert.equal(adapter.displayName, 'AutoGravity');
-  assert.match(prompt, /Life-reset/);
+  assert.match(prompt, /⚙️ AutoGravity/);
   assert.match(prompt, /life-reset-v1/);
-  assert.match(prompt, /暂停重复项/);
-  assert.match(prompt, /不创建新的自动化/);
+  assert.match(prompt, /⏰/);
+  assert.match(prompt, /📝/);
+  assert.match(prompt, /暂停其余/);
+  assert.match(prompt, /不新建自动化/);
 });
