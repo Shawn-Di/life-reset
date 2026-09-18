@@ -4,7 +4,7 @@ const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
 
-const { findContent, loadContent } = require('../src/content');
+const { findContent, findContentForTime, loadContent } = require('../src/content');
 
 function writeTempPack(pack) {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'life-reset-'));
@@ -16,6 +16,8 @@ function writeTempPack(pack) {
 test('loads the bundled life reset item', () => {
   const pack = loadContent('content/life-reset.json');
   assert.equal(pack.items[0].id, 'life-reset-day-one');
+  assert.equal(pack.items[0].timeSlots.length, 7);
+  assert.equal(findContentForTime(pack, '20:00').time, '20:00');
 });
 
 test('rejects a missing required field', () => {
@@ -28,13 +30,12 @@ test('rejects a missing required field', () => {
       sourceUrl: 'https://example.com/source',
       sourcePublishedAt: '2025-12-23',
       summary: 'summary',
-      action: 'action',
       copyrightNote: 'note'
     }]
   };
   const { directory, filePath } = writeTempPack(pack);
 
-  assert.throws(() => loadContent(filePath), /Invalid field: items\[0\]\.prompt/);
+  assert.throws(() => loadContent(filePath), /Invalid field: items\[0\]\.timeSlots/);
   fs.rmSync(directory, { recursive: true, force: true });
 });
 
@@ -46,9 +47,8 @@ test('rejects duplicate content ids', () => {
     sourceUrl: 'https://example.com/source',
     sourcePublishedAt: '2025-12-23',
     summary: 'summary',
-    prompt: 'prompt',
-    action: 'action',
-    copyrightNote: 'note'
+    copyrightNote: 'note',
+    timeSlots: [{ time: '08:00', prompt: 'prompt', action: 'action' }]
   };
   const { directory, filePath } = writeTempPack({ version: 1, items: [item, item] });
 

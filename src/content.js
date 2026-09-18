@@ -7,10 +7,11 @@ const REQUIRED_FIELDS = [
   'sourceUrl',
   'sourcePublishedAt',
   'summary',
-  'prompt',
-  'action',
-  'copyrightNote'
+  'copyrightNote',
+  'timeSlots'
 ];
+
+const SLOT_FIELDS = ['time', 'prompt', 'action'];
 
 function loadContent(filePath) {
   let pack;
@@ -46,10 +47,18 @@ function validatePack(pack) {
     }
 
     for (const field of REQUIRED_FIELDS) {
+      if (field === 'timeSlots') {
+        if (!Array.isArray(item[field]) || item[field].length === 0) {
+          throw new Error(`Invalid field: ${prefix}.${field}`);
+        }
+        continue;
+      }
       if (typeof item[field] !== 'string' || item[field].trim() === '') {
         throw new Error(`Invalid field: ${prefix}.${field}`);
       }
     }
+
+    validateTimeSlots(item.timeSlots, prefix);
 
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(item.id)) {
       throw new Error(`Invalid field: ${prefix}.id`);
@@ -68,7 +77,32 @@ function validatePack(pack) {
   });
 }
 
-function findContent(pack, id) {
+function validateTimeSlots(slots, prefix) {
+  const times = new Set();
+  slots.forEach((slot, index) => {
+    const slotPrefix = `${prefix}.timeSlots[${index}]`;
+    if (!slot || typeof slot !== 'object' || Array.isArray(slot)) {
+      throw new Error(`Invalid field: ${slotPrefix}`);
+    }
+
+    for (const field of SLOT_FIELDS) {
+      if (typeof slot[field] !== 'string' || slot[field].trim() === '') {
+        throw new Error(`Invalid field: ${slotPrefix}.${field}`);
+      }
+    }
+
+    const [hours, minutes] = slot.time.split(':').map(Number);
+    if (!/^\d{2}:\d{2}$/.test(slot.time) || hours > 23 || minutes > 59) {
+      throw new Error(`Invalid field: ${slotPrefix}.time`);
+    }
+    if (times.has(slot.time)) {
+      throw new Error(`Duplicate reminder time: ${slot.time}`);
+    }
+    times.add(slot.time);
+  });
+}
+
+function findItem(pack, id) {
   const item = pack.items.find((candidate) => candidate.id === id);
   if (!item) {
     throw new Error(`Unknown content id: ${id}`);
@@ -76,4 +110,25 @@ function findContent(pack, id) {
   return item;
 }
 
-module.exports = { findContent, loadContent };
+function resolveSlot(item, time) {
+  const slot = item.timeSlots.find((candidate) => candidate.time === time);
+  if (!slot) {
+    throw new Error(`Unknown reminder time: ${time}`);
+  }
+  return { ...item, ...slot };
+}
+
+function findContent(pack, id, time = pack.items[0]?.timeSlots[0]?.time) {
+  return resolveSlot(findItem(pack, id), time);
+}
+
+function findContentForTime(pack, time) {
+  const item = pack.items.find((candidate) =>
+    candidate.timeSlots.some((slot) => slot.time === time));
+  if (!item) {
+    throw new Error(`Unknown reminder time: ${time}`);
+  }
+  return resolveSlot(item, time);
+}
+
+module.exports = { findContent, findContentForTime, loadContent };

@@ -4,7 +4,7 @@
 
 ### Content Pack
 
-`content/life-reset.json` is the single source of reminder copy. It contains the title, short original summary, reflection prompt, smallest action, and the source URL. The project does not fetch or republish the source article.
+`content/life-reset.json` is the single source of reminder copy. It contains shared source metadata and the seven local-time question/action slots from 08:00 through 20:00. The project does not fetch or republish the source article.
 
 ### Reminder Contract
 
@@ -72,7 +72,7 @@ awaiting-feedback ── user gives a short report ──→ one-sentence tactic
         └──────── no report / unrelated question ─────┴──→ silent until next reminder
 ```
 
-The reminder itself contains `【致命拷问】` and `【即刻行动】`. The tactical correction is one sentence. The loop never claims that the user read the reminder, and it does not pressure the user to respond.
+The reminder itself starts with `Hi {name}，` and contains the selected question and action on two lines without module labels. The tactical correction is one sentence. The loop never claims that the user read the reminder, and it does not pressure the user to respond.
 
 ## User controls
 

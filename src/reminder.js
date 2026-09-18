@@ -1,6 +1,6 @@
-function buildReminder(item) {
-  return `【致命拷问】 ${item.prompt}
-【即刻行动】 ${item.action}`;
+function buildReminder(item, name = '') {
+  const greeting = name ? `Hi ${name}，` : 'Hi，';
+  return `${greeting}${item.prompt}\n${item.action}`;
 }
 
 module.exports = { buildReminder };

@@ -28,9 +28,8 @@
         "sourceUrl",
         "sourcePublishedAt",
         "summary",
-        "prompt",
-        "action",
-        "copyrightNote"
+        "copyrightNote",
+        "timeSlots"
       ],
       "additionalProperties": false,
       "properties": {
@@ -49,9 +48,21 @@
           "format": "date"
         },
         "summary": { "type": "string", "minLength": 1 },
-        "prompt": { "type": "string", "minLength": 1 },
-        "action": { "type": "string", "minLength": 1 },
-        "copyrightNote": { "type": "string", "minLength": 1 }
+        "copyrightNote": { "type": "string", "minLength": 1 },
+        "timeSlots": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["time", "prompt", "action"],
+            "additionalProperties": false,
+            "properties": {
+              "time": { "type": "string", "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$" },
+              "prompt": { "type": "string", "minLength": 1 },
+              "action": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
       }
     }
   }
