@@ -27,3 +27,5 @@ The one automation stores one saved `Life-reset` conversation ID. It continues t
 The default schedule is every two hours at minute `00` in the user's local timezone, only during the daytime window 08:00–22:00 (08:00 through 20:00 triggers). A custom window changes the same automation. It never uses per-run heartbeat scheduling or minute jitter.
 
 The user-visible reminder is exactly two lines: a `Hi {name}，` greeting plus the selected question, followed by the selected action. Platform setup questions, status, source metadata, and Skill initialization instructions must not be sent as reminder content.
+
+The reminder selects content from the user's active question-bank module. The default module is `life-reset-day-one`. Module selection and custom module data belong to user-owned state/configuration; they do not create another automation. If a module has no slot for the current time, skip that reminder.

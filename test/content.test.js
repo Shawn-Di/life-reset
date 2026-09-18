@@ -4,7 +4,12 @@ const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
 
-const { findContent, findContentForTime, loadContent } = require('../src/content');
+const {
+  findContent,
+  findContentForTime,
+  listModules,
+  loadContent
+} = require('../src/content');
 
 function writeTempPack(pack) {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'life-reset-'));
@@ -13,50 +18,81 @@ function writeTempPack(pack) {
   return { directory, filePath };
 }
 
-test('loads the bundled life reset item', () => {
+test('loads the bundled life reset module', () => {
   const pack = loadContent('content/life-reset.json');
-  assert.equal(pack.items[0].id, 'life-reset-day-one');
-  assert.equal(pack.items[0].timeSlots.length, 7);
+  assert.equal(pack.defaultModuleId, 'life-reset-day-one');
+  assert.equal(pack.modules[0].id, 'life-reset-day-one');
+  assert.equal(pack.modules[0].slots.length, 7);
   assert.equal(findContentForTime(pack, '20:00').time, '20:00');
+  assert.deepEqual(listModules(pack), [{
+    id: 'life-reset-day-one',
+    title: '人生重启',
+    summary: '通过反思、聚焦和行动，重新夺回一天的主导权。'
+  }]);
 });
 
 test('rejects a missing required field', () => {
   const pack = {
     version: 1,
-    items: [{
+    defaultModuleId: 'life-reset-day-one',
+    modules: [{
       id: 'life-reset-day-one',
       title: '人生重启',
-      author: 'Dan Koe',
-      sourceUrl: 'https://example.com/source',
-      sourcePublishedAt: '2025-12-23',
       summary: 'summary',
-      copyrightNote: 'note'
+      slots: []
     }]
   };
   const { directory, filePath } = writeTempPack(pack);
 
-  assert.throws(() => loadContent(filePath), /Invalid field: items\[0\]\.timeSlots/);
+  assert.throws(() => loadContent(filePath), /Invalid field: modules\[0\]\.slots/);
   fs.rmSync(directory, { recursive: true, force: true });
 });
 
-test('rejects duplicate content ids', () => {
+test('rejects duplicate module ids', () => {
   const item = {
     id: 'same-id',
     title: 'title',
-    author: 'author',
-    sourceUrl: 'https://example.com/source',
-    sourcePublishedAt: '2025-12-23',
     summary: 'summary',
-    copyrightNote: 'note',
-    timeSlots: [{ time: '08:00', prompt: 'prompt', action: 'action' }]
+    slots: [{ time: '08:00', prompt: 'prompt', action: 'action' }]
   };
-  const { directory, filePath } = writeTempPack({ version: 1, items: [item, item] });
+  const { directory, filePath } = writeTempPack({
+    version: 1,
+    defaultModuleId: 'same-id',
+    modules: [item, item]
+  });
 
-  assert.throws(() => loadContent(filePath), /Duplicate content id: same-id/);
+  assert.throws(() => loadContent(filePath), /Duplicate module id: same-id/);
   fs.rmSync(directory, { recursive: true, force: true });
 });
 
-test('rejects an unknown content id', () => {
+test('rejects an unknown module id', () => {
   const pack = loadContent('content/life-reset.json');
-  assert.throws(() => findContent(pack, 'missing'), /Unknown content id: missing/);
+  assert.throws(() => findContent(pack, 'missing'), /Unknown module id: missing/);
+});
+
+test('loads a custom module and selects it explicitly', () => {
+  const customModule = {
+    id: 'my-module',
+    title: '我的题库',
+    summary: '自定义提醒',
+    slots: [{ time: '08:00', prompt: '我的问题', action: '我的行动' }]
+  };
+  const { directory, filePath } = writeTempPack({
+    version: 1,
+    defaultModuleId: 'life-reset-day-one',
+    modules: [
+      customModule,
+      {
+        id: 'life-reset-day-one',
+        title: '默认题库',
+        summary: '默认',
+        slots: [{ time: '08:00', prompt: '默认问题', action: '默认行动' }]
+      }
+    ]
+  });
+
+  const pack = loadContent(filePath);
+  assert.equal(findContent(pack, 'my-module', '08:00').prompt, '我的问题');
+  assert.equal(findContentForTime(pack, '08:00', 'my-module').action, '我的行动');
+  fs.rmSync(directory, { recursive: true, force: true });
 });

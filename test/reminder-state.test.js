@@ -3,6 +3,7 @@ const test = require('node:test');
 
 const {
   CONVERSATION_PHASES,
+  DEFAULT_MODULE_ID,
   DEFAULT_SCHEDULE,
   decideFeedback,
   decideDelivery,
@@ -18,6 +19,7 @@ const {
 test('reminders are enabled by default', () => {
   assert.deepEqual(getDefaultState(), {
     enabled: true,
+    moduleId: DEFAULT_MODULE_ID,
     schedule: DEFAULT_SCHEDULE,
     conversationId: null,
     conversationTitle: 'Life-reset',

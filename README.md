@@ -154,7 +154,7 @@ Grok Bot 网页端目前没有可验证的 GitHub Skill 一键安装命令。若
 Life-reset 分成三个部分：
 
 1. `skills/life-reset/SKILL.md`：告诉 AI 如何保持人生导师模式。
-2. `content/`：保存提醒内容、行动问题和原文链接。
+2. `content/`：保存可切换的提醒题库模块、问题、行动和原文链接。
 3. `adapters/`：说明如何接入不同 AI 工具的 Skill、任务和自动化。
 
 Skill 不拥有独立 Token，也不代替用户登录。调度、新建对话和继续对话都使用用户在对应平台已有的账号、权限和 Token。
@@ -187,6 +187,25 @@ Hi {name}，今天最重要、却最容易被你拖到明天的那件事是什�
 ```
 
 用户完成行动并反馈后，Life-reset 只给出一句战术修正，然后保持静默，直到下一轮提醒；不会强迫用户回复或声称用户已经阅读。
+
+### 模块化题库与自定义
+
+题库由多个模块组成。默认模块是 `life-reset-day-one`，每个模块独立保存名称、简介和各时间段的 `prompt` / `action`。模块切换只更新用户状态中的 `moduleId`，不会创建第二个自动化或新对话。
+
+用户可以在对话中说：
+
+- `查看提醒题库`
+- `切换到 <模块名或 ID> 题库`
+- `自定义提醒题库`
+
+自定义模块格式见 [`skills/life-reset/references/module-format.md`](./skills/life-reset/references/module-format.md)，完整示例见 [`content/custom-module.example.json`](./content/custom-module.example.json)。本地校验和预览：
+
+```bash
+npm run validate -- --pack content/custom-module.example.json
+npm run generate -- --pack content/custom-module.example.json --module my-module --time 08:00 --name name
+```
+
+模块只需配置需要提醒的时间；当前模块没有对应时间内容时跳过该轮提醒。提醒仍只发送两行，不显示模块标题。
 
 不同平台需要分别安装。安装能力和主动提醒能力是两件事：能安装 Skill，不代表平台一定允许 Skill 自己创建对话或定时运行。详见 [`adapters/`](./adapters/) 和 [`docs/platform-support.md`](./docs/platform-support.md)。
 
@@ -223,7 +242,7 @@ Hi {name}，今天最重要、却最容易被你拖到明天的那件事是什�
 
 ## 内容
 
-第一份内容是 Dan Koe 的《How to fix your entire life in 1 day》，按 08:00–20:00 的每个两小时整点使用不同问题和行动；22:00 是提醒窗口结束点。
+默认模块是 Dan Koe 的《How to fix your entire life in 1 day》，按 08:00–20:00 的每个两小时整点使用不同问题和行动；22:00 是提醒窗口结束点。更多题库可以作为模块添加，不需要修改自动化。
 
 - 通过反思当前不想继续的生活，明确新的方向。
 - 把方向拆成年度使命、月度项目和每日行动。
@@ -243,7 +262,7 @@ life-reset/
 ├─ .claude-plugin/plugin.json  # Claude Code 插件元数据
 ├─ kimi.plugin.json            # Kimi Code 插件元数据
 ├─ plugin.json                 # Antigravity 插件元数据
-├─ content/                    # 提醒内容包
+├─ content/                    # 模块化提醒内容包
 ├─ schema/                     # 内容格式契约
 ├─ src/                        # 内容加载、提醒生成、状态决策
 ├─ scripts/                    # 可选的本地校验和生成命令

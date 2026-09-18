@@ -1,4 +1,5 @@
 const CONVERSATION_TITLE = 'Life-reset';
+const DEFAULT_MODULE_ID = 'life-reset-day-one';
 const CONVERSATION_PHASES = Object.freeze({
   SILENT: 'silent',
   AWAITING_FEEDBACK: 'awaiting-feedback'
@@ -11,9 +12,10 @@ const DEFAULT_SCHEDULE = Object.freeze({
   userConfirmed: false
 });
 
-function getDefaultState() {
+function getDefaultState(moduleId = DEFAULT_MODULE_ID) {
   return {
     enabled: true,
+    moduleId,
     schedule: { ...DEFAULT_SCHEDULE },
     conversationId: null,
     conversationTitle: CONVERSATION_TITLE,
@@ -146,6 +148,7 @@ function decideDelivery(state = {}, conversationExists = false) {
 module.exports = {
   CONVERSATION_TITLE,
   CONVERSATION_PHASES,
+  DEFAULT_MODULE_ID,
   DEFAULT_SCHEDULE,
   decideFeedback,
   decideDelivery,

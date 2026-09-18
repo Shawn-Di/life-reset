@@ -1,14 +1,17 @@
 const fs = require('node:fs');
 
-const REQUIRED_FIELDS = [
+const REQUIRED_MODULE_FIELDS = [
   'id',
   'title',
+  'summary',
+  'slots'
+];
+
+const OPTIONAL_MODULE_FIELDS = [
   'author',
   'sourceUrl',
   'sourcePublishedAt',
-  'summary',
-  'copyrightNote',
-  'timeSlots'
+  'copyrightNote'
 ];
 
 const SLOT_FIELDS = ['time', 'prompt', 'action'];
@@ -35,52 +38,64 @@ function validatePack(pack) {
     throw new Error('Invalid field: version');
   }
 
-  if (!Array.isArray(pack.items) || pack.items.length === 0) {
-    throw new Error('Invalid field: items');
+  if (!Array.isArray(pack.modules) || pack.modules.length === 0) {
+    throw new Error('Invalid field: modules');
+  }
+  if (typeof pack.defaultModuleId !== 'string' || pack.defaultModuleId.trim() === '') {
+    throw new Error('Invalid field: defaultModuleId');
   }
 
   const ids = new Set();
-  pack.items.forEach((item, index) => {
-    const prefix = `items[${index}]`;
-    if (!item || typeof item !== 'object' || Array.isArray(item)) {
+  pack.modules.forEach((module, index) => {
+    const prefix = `modules[${index}]`;
+    if (!module || typeof module !== 'object' || Array.isArray(module)) {
       throw new Error(`Invalid field: ${prefix}`);
     }
 
-    for (const field of REQUIRED_FIELDS) {
-      if (field === 'timeSlots') {
-        if (!Array.isArray(item[field]) || item[field].length === 0) {
+    for (const field of REQUIRED_MODULE_FIELDS) {
+      if (field === 'slots') {
+        if (!Array.isArray(module[field]) || module[field].length === 0) {
           throw new Error(`Invalid field: ${prefix}.${field}`);
         }
-        continue;
-      }
-      if (typeof item[field] !== 'string' || item[field].trim() === '') {
+      } else if (typeof module[field] !== 'string' || module[field].trim() === '') {
         throw new Error(`Invalid field: ${prefix}.${field}`);
       }
     }
 
-    validateTimeSlots(item.timeSlots, prefix);
+    for (const field of OPTIONAL_MODULE_FIELDS) {
+      if (module[field] !== undefined &&
+          (typeof module[field] !== 'string' || module[field].trim() === '')) {
+        throw new Error(`Invalid field: ${prefix}.${field}`);
+      }
+    }
 
-    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(item.id)) {
+    validateSlots(module.slots, prefix);
+
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(module.id)) {
       throw new Error(`Invalid field: ${prefix}.id`);
     }
-    if (ids.has(item.id)) {
-      throw new Error(`Duplicate content id: ${item.id}`);
+    if (ids.has(module.id)) {
+      throw new Error(`Duplicate module id: ${module.id}`);
     }
-    ids.add(item.id);
+    ids.add(module.id);
 
-    if (!/^https:\/\/\S+$/.test(item.sourceUrl)) {
+    if (module.sourceUrl && !/^https:\/\/\S+$/.test(module.sourceUrl)) {
       throw new Error(`Invalid field: ${prefix}.sourceUrl`);
     }
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(item.sourcePublishedAt)) {
+    if (module.sourcePublishedAt && !/^\d{4}-\d{2}-\d{2}$/.test(module.sourcePublishedAt)) {
       throw new Error(`Invalid field: ${prefix}.sourcePublishedAt`);
     }
   });
+
+  if (!ids.has(pack.defaultModuleId)) {
+    throw new Error(`Unknown default module: ${pack.defaultModuleId}`);
+  }
 }
 
-function validateTimeSlots(slots, prefix) {
+function validateSlots(slots, prefix) {
   const times = new Set();
   slots.forEach((slot, index) => {
-    const slotPrefix = `${prefix}.timeSlots[${index}]`;
+    const slotPrefix = `${prefix}.slots[${index}]`;
     if (!slot || typeof slot !== 'object' || Array.isArray(slot)) {
       throw new Error(`Invalid field: ${slotPrefix}`);
     }
@@ -102,33 +117,39 @@ function validateTimeSlots(slots, prefix) {
   });
 }
 
-function findItem(pack, id) {
-  const item = pack.items.find((candidate) => candidate.id === id);
-  if (!item) {
-    throw new Error(`Unknown content id: ${id}`);
+function findModule(pack, id) {
+  const module = pack.modules.find((candidate) => candidate.id === id);
+  if (!module) {
+    throw new Error(`Unknown module id: ${id}`);
   }
-  return item;
+  return module;
 }
 
-function resolveSlot(item, time) {
-  const slot = item.timeSlots.find((candidate) => candidate.time === time);
+function resolveSlot(module, time) {
+  const slot = module.slots.find((candidate) => candidate.time === time);
   if (!slot) {
     throw new Error(`Unknown reminder time: ${time}`);
   }
-  return { ...item, ...slot };
+  return { ...module, ...slot };
 }
 
-function findContent(pack, id, time = pack.items[0]?.timeSlots[0]?.time) {
-  return resolveSlot(findItem(pack, id), time);
+function findContent(pack, moduleId = pack.defaultModuleId, time) {
+  const module = findModule(pack, moduleId);
+  return resolveSlot(module, time || module.slots[0].time);
 }
 
-function findContentForTime(pack, time) {
-  const item = pack.items.find((candidate) =>
-    candidate.timeSlots.some((slot) => slot.time === time));
-  if (!item) {
-    throw new Error(`Unknown reminder time: ${time}`);
-  }
-  return resolveSlot(item, time);
+function findContentForTime(pack, time, moduleId = pack.defaultModuleId) {
+  return resolveSlot(findModule(pack, moduleId), time);
 }
 
-module.exports = { findContent, findContentForTime, loadContent };
+function listModules(pack) {
+  return pack.modules.map(({ id, title, summary }) => ({ id, title, summary }));
+}
+
+module.exports = {
+  findContent,
+  findContentForTime,
+  findModule,
+  listModules,
+  loadContent
+};

@@ -4,7 +4,7 @@
 
 ### Content Pack
 
-`content/life-reset.json` is the single source of reminder copy. It contains shared source metadata and the seven local-time question/action slots from 08:00 through 20:00. The project does not fetch or republish the source article.
+`content/life-reset.json` is the bundled content registry. It contains a `defaultModuleId` and independent reminder modules. Each module owns its metadata and local-time question/action slots. The project does not fetch or republish the source article. The installed Skill includes the default registry at `skills/life-reset/references/content-pack.json`.
 
 ### Reminder Contract
 
@@ -13,6 +13,7 @@ The platform-neutral state is:
 ```json
 {
   "enabled": true,
+  "moduleId": "life-reset-day-one",
   "schedule": {
     "intervalMinutes": 120,
     "timezone": "user-local",
@@ -73,6 +74,8 @@ awaiting-feedback ── user gives a short report ──→ one-sentence tactic
 ```
 
 The reminder itself starts with `Hi {name}，` and contains the selected question and action on two lines without module labels. The tactical correction is one sentence. The loop never claims that the user read the reminder, and it does not pressure the user to respond.
+
+The active question bank is the module named by `moduleId`. “查看提醒题库” lists available modules; “切换到 <模块> 题库” changes only `moduleId`; “自定义提醒题库” adds a user-owned module with its own slots. Module changes never create another automation or conversation.
 
 ## User controls
 
