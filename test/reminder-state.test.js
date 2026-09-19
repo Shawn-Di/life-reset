@@ -7,6 +7,7 @@ const {
   DEFAULT_SCHEDULE,
   decideFeedback,
   decideDelivery,
+  decideDeliveryFromConversations,
   getDefaultState,
   isReminderDue,
   isReminderSlot,
@@ -111,6 +112,33 @@ test('creates a new conversation when the prior one is unavailable', () => {
     title: 'Life-reset'
   });
   assert.deepEqual(decideDelivery({ enabled: true, conversationId: null }, false), {
+    type: 'create',
+    title: 'Life-reset'
+  });
+});
+
+test('reuses an accessible exact-title conversation before creating one', () => {
+  const state = { enabled: true, conversationId: null };
+  const conversations = [
+    { id: 'other', title: 'Other' },
+    { id: 'life-reset-1', title: 'Life-reset', accessible: true }
+  ];
+
+  assert.deepEqual(decideDeliveryFromConversations(state, conversations), {
+    type: 'send',
+    title: 'Life-reset',
+    conversationId: 'life-reset-1'
+  });
+});
+
+test('creates only when no accessible exact-title conversation exists', () => {
+  const state = { enabled: true, conversationId: 'deleted' };
+  const conversations = [
+    { id: 'deleted', title: 'Life-reset', accessible: false },
+    { id: 'other', title: 'Other', accessible: true }
+  ];
+
+  assert.deepEqual(decideDeliveryFromConversations(state, conversations), {
     type: 'create',
     title: 'Life-reset'
   });

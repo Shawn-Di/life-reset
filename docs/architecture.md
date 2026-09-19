@@ -58,7 +58,7 @@ When the result is `sent`, keep the existing `conversationId`. When the result i
 
 ## Conversation behavior
 
-The first reminder creates a new conversation titled `Life-reset`. Every later reminder checks the saved conversation reference first. If it still exists and is accessible, the reminder is sent into that conversation. If it was deleted or cannot be accessed, the adapter creates a replacement titled `Life-reset`.
+Every reminder first searches accessible conversations for the exact title `Life-reset`. If one exists, the adapter reuses the saved ID when possible; otherwise it chooses the most recently active matching conversation and refreshes the saved ID. Only zero accessible exact-title matches permit creating a replacement titled `Life-reset`.
 
 The installed Skill instructions provide the persistent life-reset mentor behavior. A newly created conversation must receive only the two-line reminder; it must not receive a separate mode-initialization message. There is exactly one active Life-reset automation per host, even when the saved conversation is replaced.
 

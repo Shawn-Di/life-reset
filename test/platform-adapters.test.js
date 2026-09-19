@@ -24,6 +24,7 @@ test('exposes a setup prompt for each supported platform', () => {
   assert.match(prompt, /📝/);
   assert.match(prompt, /暂停其余/);
   assert.match(prompt, /不新建自动化/);
+  assert.match(prompt, /每次运行先查找/);
   assert.match(prompt, /Hi \{name\}/);
   assert.doesNotMatch(prompt, /致命拷问|即刻行动/);
 });

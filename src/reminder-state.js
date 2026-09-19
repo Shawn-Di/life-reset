@@ -136,12 +136,64 @@ function parseReminderCommand(text) {
 }
 
 function decideDelivery(state = {}, conversationExists = false) {
+  if (Array.isArray(conversationExists)) {
+    return decideDeliveryFromConversations(state, conversationExists);
+  }
+
   if (state.enabled === false) {
     return { type: 'skip', title: CONVERSATION_TITLE };
   }
   if (state.conversationId && conversationExists) {
     return { type: 'send', title: CONVERSATION_TITLE };
   }
+  return { type: 'create', title: CONVERSATION_TITLE };
+}
+
+function findReusableConversation(conversations = [], savedConversationId = null) {
+  const matches = conversations.filter((conversation) => (
+    conversation
+    && conversation.id
+    && conversation.title === CONVERSATION_TITLE
+    && conversation.accessible !== false
+    && conversation.isAccessible !== false
+    && conversation.deleted !== true
+  ));
+
+  const saved = matches.find(({ id }) => id === savedConversationId);
+  if (saved) {
+    return saved;
+  }
+
+  return matches.reduce((latest, conversation) => (
+    latest === null
+      || conversationTimestamp(conversation) > conversationTimestamp(latest)
+      ? conversation
+      : latest
+  ), null);
+}
+
+function conversationTimestamp(conversation) {
+  if (!conversation) {
+    return 0;
+  }
+
+  return Date.parse(conversation.updatedAt || conversation.lastActivityAt || '') || 0;
+}
+
+function decideDeliveryFromConversations(state = {}, conversations = []) {
+  if (state.enabled === false) {
+    return { type: 'skip', title: CONVERSATION_TITLE };
+  }
+
+  const conversation = findReusableConversation(conversations, state.conversationId);
+  if (conversation) {
+    return {
+      type: 'send',
+      title: CONVERSATION_TITLE,
+      conversationId: conversation.id
+    };
+  }
+
   return { type: 'create', title: CONVERSATION_TITLE };
 }
 
@@ -152,6 +204,7 @@ module.exports = {
   DEFAULT_SCHEDULE,
   decideFeedback,
   decideDelivery,
+  decideDeliveryFromConversations,
   getDefaultState,
   isReminderDue,
   isReminderSlot,
