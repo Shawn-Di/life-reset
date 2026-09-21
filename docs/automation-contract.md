@@ -24,7 +24,7 @@ If a platform cannot list automation IDs, use the exact name and key in the plat
 
 The one automation stores one saved `Life-reset` conversation ID. Before every reminder, it must list or search accessible conversations by the exact title `Life-reset`. It uses the saved ID when it is still accessible; otherwise it uses the most recently active accessible exact-title conversation and refreshes the saved ID. It creates a replacement only when no accessible exact-title conversation exists. Creating a replacement conversation is not permission to create a replacement automation.
 
-The default schedule is every two hours at minute `00` in the user's local timezone, only during the daytime window 08:00–22:00 (08:00 through 20:00 triggers). A custom window changes the same automation. It never uses per-run heartbeat scheduling or minute jitter.
+The default schedule is exactly 08:00, 10:00, 12:00, 14:00, 16:00, 18:00, and 20:00 in the user's local timezone, inside the 08:00–22:00 daytime window. A custom window changes the same automation. It never uses per-run heartbeat scheduling or minute jitter. If execution starts a few minutes after an exact hour, select that hour's slot and do not create an extra reminder.
 
 On first activation without `displayName`, the conversation asks “我该怎么称呼你？” and saves the answer. Later reminders are one line: `{displayName}，` followed by the selected question, a space, and the selected action. `Hi`, greeting-only lines, and line breaks are not used. Platform setup questions, status, source metadata, and Skill initialization instructions must not be sent as reminder content.
 

@@ -126,7 +126,11 @@ function findModule(pack, id) {
 }
 
 function resolveSlot(module, time) {
-  const slot = module.slots.find((candidate) => candidate.time === time);
+  const slot = module.slots.find((candidate) => candidate.time === time)
+    || module.slots.find((candidate) => (
+      candidate.time.endsWith(':00')
+      && candidate.time.slice(0, 2) === time.slice(0, 2)
+    ));
   if (!slot) {
     throw new Error(`Unknown reminder time: ${time}`);
   }

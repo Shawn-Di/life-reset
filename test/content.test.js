@@ -24,6 +24,7 @@ test('loads the bundled life reset module', () => {
   assert.equal(pack.modules[0].id, 'life-reset-day-one');
   assert.equal(pack.modules[0].slots.length, 7);
   assert.equal(findContentForTime(pack, '20:00').time, '20:00');
+  assert.equal(findContentForTime(pack, '20:03').time, '20:00');
   assert.deepEqual(listModules(pack), [{
     id: 'life-reset-day-one',
     title: '人生重启',
