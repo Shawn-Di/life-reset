@@ -13,13 +13,16 @@ const {
   isReminderSlot,
   isWithinReminderWindow,
   markReminderDelivered,
+  needsDisplayName,
   needsSchedulePreference,
-  parseReminderCommand
+  parseReminderCommand,
+  setDisplayName
 } = require('../src/reminder-state');
 
 test('reminders are enabled by default', () => {
   assert.deepEqual(getDefaultState(), {
     enabled: true,
+    displayName: null,
     moduleId: DEFAULT_MODULE_ID,
     schedule: DEFAULT_SCHEDULE,
     conversationId: null,
@@ -63,6 +66,14 @@ test('asks for a preferred schedule until the user confirms one', () => {
   assert.equal(needsSchedulePreference({
     schedule: { ...DEFAULT_SCHEDULE, userConfirmed: true }
   }), false);
+});
+
+test('asks for a display name only until the user provides one', () => {
+  const state = getDefaultState();
+  assert.equal(needsDisplayName(state), true);
+  const namedState = setDisplayName(state, '  Shawn  ');
+  assert.equal(needsDisplayName(namedState), false);
+  assert.equal(namedState.displayName, 'Shawn');
 });
 
 test('only sends a due reminder inside the local window', () => {

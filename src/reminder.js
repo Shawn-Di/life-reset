@@ -1,6 +1,7 @@
 function buildReminder(item, name = '') {
-  const greeting = name ? `Hi ${name}，` : 'Hi，';
-  return `${greeting}${item.prompt}\n${item.action}`;
+  const normalizedName = typeof name === 'string' ? name.trim() : '';
+  const prefix = normalizedName ? `${normalizedName}，` : '';
+  return `${prefix}${item.prompt} ${item.action}`;
 }
 
 module.exports = { buildReminder };

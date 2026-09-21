@@ -15,6 +15,7 @@ const DEFAULT_SCHEDULE = Object.freeze({
 function getDefaultState(moduleId = DEFAULT_MODULE_ID) {
   return {
     enabled: true,
+    displayName: null,
     moduleId,
     schedule: { ...DEFAULT_SCHEDULE },
     conversationId: null,
@@ -44,6 +45,15 @@ function decideFeedback(state = {}, feedbackReceived = false) {
 
 function needsSchedulePreference(state = {}) {
   return state.schedule?.userConfirmed !== true;
+}
+
+function needsDisplayName(state = {}) {
+  return typeof state.displayName !== 'string' || state.displayName.trim() === '';
+}
+
+function setDisplayName(state = {}, displayName) {
+  const name = typeof displayName === 'string' ? displayName.trim() : '';
+  return { ...state, displayName: name || null };
 }
 
 function timeToMinutes(value) {
@@ -210,6 +220,8 @@ module.exports = {
   isReminderSlot,
   isWithinReminderWindow,
   markReminderDelivered,
+  needsDisplayName,
   needsSchedulePreference,
-  parseReminderCommand
+  parseReminderCommand,
+  setDisplayName
 };

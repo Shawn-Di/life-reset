@@ -13,6 +13,7 @@ The platform-neutral state is:
 ```json
 {
   "enabled": true,
+  "displayName": null,
   "moduleId": "life-reset-day-one",
   "schedule": {
     "intervalMinutes": 120,
@@ -60,7 +61,7 @@ When the result is `sent`, keep the existing `conversationId`. When the result i
 
 Every reminder first searches accessible conversations for the exact title `Life-reset`. If one exists, the adapter reuses the saved ID when possible; otherwise it chooses the most recently active matching conversation and refreshes the saved ID. Only zero accessible exact-title matches permit creating a replacement titled `Life-reset`.
 
-The installed Skill instructions provide the persistent life-reset mentor behavior. A newly created conversation must receive only the two-line reminder; it must not receive a separate mode-initialization message. There is exactly one active Life-reset automation per host, even when the saved conversation is replaced.
+The installed Skill instructions provide the persistent life-reset mentor behavior. A newly created conversation must receive only the single-line reminder after the display name is known; it must not receive a separate mode-initialization message. There is exactly one active Life-reset automation per host, even when the saved conversation is replaced.
 
 ### Reminder interaction loop
 
@@ -73,7 +74,7 @@ awaiting-feedback ── user gives a short report ──→ one-sentence tactic
         └──────── no report / unrelated question ─────┴──→ silent until next reminder
 ```
 
-The reminder itself starts with `Hi {name}，` and contains the selected question and action on two lines without module labels. The tactical correction is one sentence. The loop never claims that the user read the reminder, and it does not pressure the user to respond.
+On first activation without `displayName`, the conversation asks for the user's preferred name and saves it. Later reminders contain the name, selected question, and action on one line without module labels or a `Hi` greeting. The tactical correction is one sentence. The loop never claims that the user read the reminder, and it does not pressure the user to respond. Successful automation housekeeping remains silent.
 
 The active question bank is the module named by `moduleId`. “查看提醒题库” lists available modules; “切换到 <模块> 题库” changes only `moduleId`; “自定义提醒题库” adds a user-owned module with its own slots. Module changes never create another automation or conversation.
 

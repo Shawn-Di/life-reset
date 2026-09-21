@@ -26,6 +26,8 @@ The one automation stores one saved `Life-reset` conversation ID. Before every r
 
 The default schedule is every two hours at minute `00` in the user's local timezone, only during the daytime window 08:00–22:00 (08:00 through 20:00 triggers). A custom window changes the same automation. It never uses per-run heartbeat scheduling or minute jitter.
 
-The user-visible reminder is exactly two lines: a `Hi {name}，` greeting plus the selected question, followed by the selected action. Platform setup questions, status, source metadata, and Skill initialization instructions must not be sent as reminder content.
+On first activation without `displayName`, the conversation asks “我该怎么称呼你？” and saves the answer. Later reminders are one line: `{displayName}，` followed by the selected question, a space, and the selected action. `Hi`, greeting-only lines, and line breaks are not used. Platform setup questions, status, source metadata, and Skill initialization instructions must not be sent as reminder content.
+
+Automation lookup, deduplication, conversation-ID persistence, and delivery success are silent. A successful run emits only the reminder; it must not emit “已处理”, “已发送”, duplicate cleanup, or other execution status.
 
 The reminder selects content from the user's active question-bank module. The default module is `life-reset-day-one`. Module selection and custom module data belong to user-owned state/configuration; they do not create another automation. If a module has no slot for the current time, skip that reminder.
