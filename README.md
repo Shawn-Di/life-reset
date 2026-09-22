@@ -247,7 +247,7 @@ npm run generate -- --pack content/custom-module.example.json --module my-module
 
 - 通过反思当前不想继续的生活，明确新的方向。
 - 把方向拆成年度使命、月度项目和每日行动。
-- 用一个具体问题和一个最小行动结束每次提醒。
+- 定时先发一个具体问题；用户回复后再发对应行动；再次回复后以“现在就开始行动好了”结束本轮。
 
 原文：[letters.thedankoe.com/p/how-to-fix-your-entire-life-in-1](https://letters.thedankoe.com/p/how-to-fix-your-entire-life-in-1)
 

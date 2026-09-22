@@ -29,15 +29,20 @@ test('reminders are enabled by default', () => {
     conversationId: null,
     conversationTitle: 'Life-reset',
     conversationPhase: 'silent',
+    pendingSlotTime: null,
     lastReminderAt: null
   });
 });
 
 test('uses the reminder feedback state machine', () => {
-  assert.equal(markReminderDelivered({}).conversationPhase, 'awaiting-feedback');
+  assert.deepEqual(markReminderDelivered({}, '08:00'), {
+    conversationPhase: 'awaiting-feedback',
+    pendingSlotTime: '08:00'
+  });
 
   const awaitingFeedback = {
-    conversationPhase: CONVERSATION_PHASES.AWAITING_FEEDBACK
+    conversationPhase: CONVERSATION_PHASES.AWAITING_FEEDBACK,
+    pendingSlotTime: '08:00'
   };
 
   assert.deepEqual(decideFeedback(awaitingFeedback, false), {
@@ -45,8 +50,18 @@ test('uses the reminder feedback state machine', () => {
     phase: 'awaiting-feedback'
   });
   assert.deepEqual(decideFeedback(awaitingFeedback, true), {
-    type: 'tactical-correction',
-    phase: 'silent'
+    type: 'action',
+    phase: 'awaiting-action',
+    slotTime: '08:00'
+  });
+
+  assert.deepEqual(decideFeedback({
+    conversationPhase: CONVERSATION_PHASES.AWAITING_ACTION,
+    pendingSlotTime: '08:00'
+  }, true), {
+    type: 'start-now',
+    phase: 'silent',
+    text: '现在就开始行动好了'
   });
 });
 

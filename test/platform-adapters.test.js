@@ -27,7 +27,9 @@ test('exposes a setup prompt for each supported platform', () => {
   assert.match(prompt, /暂停其余/);
   assert.match(prompt, /跨对话消息/);
   assert.match(prompt, /配置或修复时查找/);
-  assert.match(prompt, /\{name\}，问题 行动/);
+  assert.match(prompt, /定时只发“\{name\}，问题”/);
+  assert.match(prompt, /首次回复后只发对应行动/);
+  assert.match(prompt, /现在就开始行动好了/);
   assert.match(prompt, /不加 Hi/);
   assert.match(prompt, /用户未回复时不输出任何文字/);
   assert.match(prompt, /禁止代答/);

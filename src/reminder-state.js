@@ -3,7 +3,8 @@ const DEFAULT_MODULE_ID = 'life-reset-day-one';
 const CONVERSATION_PHASES = Object.freeze({
   SILENT: 'silent',
   AWAITING_NAME: 'awaiting-name',
-  AWAITING_FEEDBACK: 'awaiting-feedback'
+  AWAITING_FEEDBACK: 'awaiting-feedback',
+  AWAITING_ACTION: 'awaiting-action'
 });
 const DEFAULT_SCHEDULE = Object.freeze({
   intervalMinutes: 120,
@@ -22,26 +23,43 @@ function getDefaultState(moduleId = DEFAULT_MODULE_ID) {
     conversationId: null,
     conversationTitle: CONVERSATION_TITLE,
     conversationPhase: CONVERSATION_PHASES.SILENT,
+    pendingSlotTime: null,
     lastReminderAt: null
   };
 }
 
-function markReminderDelivered(state = {}) {
+function markReminderDelivered(state = {}, slotTime = null) {
   return {
     ...state,
-    conversationPhase: CONVERSATION_PHASES.AWAITING_FEEDBACK
+    conversationPhase: CONVERSATION_PHASES.AWAITING_FEEDBACK,
+    pendingSlotTime: slotTime
   };
 }
 
 function decideFeedback(state = {}, feedbackReceived = false) {
-  if (state.conversationPhase !== CONVERSATION_PHASES.AWAITING_FEEDBACK) {
+  const phase = state.conversationPhase;
+  if (
+    phase !== CONVERSATION_PHASES.AWAITING_FEEDBACK
+    && phase !== CONVERSATION_PHASES.AWAITING_ACTION
+  ) {
     return { type: 'silent', phase: CONVERSATION_PHASES.SILENT };
   }
   if (!feedbackReceived) {
-    return { type: 'silent', phase: CONVERSATION_PHASES.AWAITING_FEEDBACK };
+    return { type: 'silent', phase };
+  }
+  if (phase === CONVERSATION_PHASES.AWAITING_ACTION) {
+    return {
+      type: 'start-now',
+      phase: CONVERSATION_PHASES.SILENT,
+      text: '现在就开始行动好了'
+    };
   }
 
-  return { type: 'tactical-correction', phase: CONVERSATION_PHASES.SILENT };
+  return {
+    type: 'action',
+    phase: CONVERSATION_PHASES.AWAITING_ACTION,
+    slotTime: state.pendingSlotTime
+  };
 }
 
 function needsSchedulePreference(state = {}) {

@@ -17,4 +17,4 @@ Add a module to a user-owned content pack. Do not edit the installed Skill's `SK
 }
 ```
 
-`id` uses lowercase letters, numbers, and hyphens. `time` uses `HH:MM`. Each time appears at most once in a module. `author`, `sourceUrl`, `sourcePublishedAt`, and `copyrightNote` are optional metadata fields. The reminder only sends the selected module's `prompt` and `action`.
+`id` uses lowercase letters, numbers, and hyphens. `time` uses `HH:MM`. Each time appears at most once in a module. `author`, `sourceUrl`, `sourcePublishedAt`, and `copyrightNote` are optional metadata fields. The scheduled reminder sends `prompt`; after the user's first reply, the same cycle sends `action`.

@@ -22,6 +22,7 @@ The platform-neutral state is:
     "end": "22:00",
     "userConfirmed": false
   },
+  "pendingSlotTime": null,
   "lastReminderAt": null,
   "conversationId": null,
   "conversationTitle": "Life-reset",
@@ -29,7 +30,7 @@ The platform-neutral state is:
 }
 ```
 
-`enabled` defaults to `true`. The scheduler runs every two hours, but an adapter sends only when the current time falls inside the user's local window; the default is 08:00–22:00. `userConfirmed` records whether the user has answered the preferred-window question. `lastReminderAt` prevents reminders from being sent more frequently than the configured interval. `conversationId` is the last conversation that received a reminder. `conversationTitle` is always `Life-reset` for newly created conversations. `conversationPhase` tracks the short feedback loop after a reminder.
+`enabled` defaults to `true`. The scheduler runs every two hours, but an adapter sends only when the current time falls inside the user's local window; the default is 08:00–22:00. `userConfirmed` records whether the user has answered the preferred-window question. `lastReminderAt` prevents reminders from being sent more frequently than the configured interval. `pendingSlotTime` identifies the action paired with the latest question. `conversationId` is the last conversation that received a reminder. `conversationTitle` is always `Life-reset` for newly created conversations. `conversationPhase` tracks the short feedback loop after a reminder.
 
 ### Platform Adapter
 
@@ -66,15 +67,15 @@ The installed Skill instructions provide the persistent life-reset mentor behavi
 ### Reminder interaction loop
 
 ```text
-reminder delivered
+question delivered
         │
         ▼
-awaiting-feedback ── user gives a short report ──→ one-sentence tactical correction
-        │                                             │
-        └──────── no report / unrelated question ─────┴──→ silent until next reminder
+awaiting-feedback ── first user reply ──→ matching action ──→ awaiting-action
+        │                                                    │
+        └── no reply ──→ silent until next reminder          └── next reply ──→ “现在就开始行动好了” ──→ silent
 ```
 
-On first activation without `displayName`, the assistant outputs only the name question, enters `awaiting-name`, pauses the heartbeat, and stops. Only a user-authored message can leave this state; automation, assistant, system, tool, and cross-task messages cannot provide the name or advance the flow. After that reply, the same heartbeat resumes. Later reminders contain the name, selected question, and action on one line without module labels or a `Hi` greeting. Without user feedback, `awaiting-feedback` is preserved instead of inventing progress; the next real report receives one tactical correction. The loop never claims that the user read the reminder, invents a user response, or pressures the user to respond. Successful automation housekeeping produces no visible status or records.
+On first activation without `displayName`, the assistant outputs only the name question, enters `awaiting-name`, pauses the heartbeat, and stops. Only a user-authored message can leave this state; automation, assistant, system, tool, and cross-task messages cannot provide the name or advance the flow. After that reply, the same heartbeat resumes. Later reminders contain only the name and selected question. The user's first reply receives the matching action; one more reply receives “现在就开始行动好了”, then the cycle becomes silent. Without user feedback, the state stays pending until the next scheduled reminder replaces it. The loop never claims that the user read the reminder or invents a user response. Successful automation housekeeping produces no visible status or records.
 
 The active question bank is the module named by `moduleId`. “查看提醒题库” lists available modules; “切换到 <模块> 题库” changes only `moduleId`; “自定义提醒题库” adds a user-owned module with its own slots. Module changes never create another automation or conversation.
 

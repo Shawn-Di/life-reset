@@ -36,10 +36,8 @@ test('keeps bundled reminders concise', () => {
   const pack = loadContent('content/life-reset.json');
 
   for (const slot of pack.modules[0].slots) {
-    assert.ok(
-      `${slot.prompt} ${slot.action}`.length <= 40,
-      `${slot.time} reminder is too long`
-    );
+    assert.ok(slot.prompt.length <= 60, `${slot.time} prompt is too long`);
+    assert.ok(slot.action.length <= 60, `${slot.time} action is too long`);
   }
 });
 

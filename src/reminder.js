@@ -1,7 +1,11 @@
 function buildReminder(item, name = '') {
   const normalizedName = typeof name === 'string' ? name.trim() : '';
   const prefix = normalizedName ? `${normalizedName}，` : '';
-  return `${prefix}${item.prompt} ${item.action}`;
+  return `${prefix}${item.prompt}`;
 }
 
-module.exports = { buildReminder };
+function buildFollowUp(item) {
+  return item.action;
+}
+
+module.exports = { buildFollowUp, buildReminder };
