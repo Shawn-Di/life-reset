@@ -1,15 +1,9 @@
 # Codex automation prompt
 
-Copy this prompt into the host's recurring automation configuration:
+The visible scheduled-task trigger cannot be hidden by a Skill. Keep it to this single invocation and store all durable behavior in the installed Skill:
 
 ```text
-⚙️ 配置唯一的 Life-reset（life-reset-v1）。
-🔍 0 条→创建并审核；1 条→复用；多条→保留最早、暂停其余。
-⏰ 用户当地时间仅在 08:00、10:00、12:00、14:00、16:00、18:00、20:00 触发；默认窗口 08:00–22:00；按当前本地小时选择题库内容。
-💬 只复用一个 Life-reset 对话；对话被删后才新建对话，不新建自动化。
-🔎 每次运行先查找可访问且标题精确为 Life-reset 的对话；找到就继续，只有 0 条才新建并保存对话 ID。
-🔔 默认开启，支持“关闭人生重启提醒 / 开启人生重启提醒”。
-🧩 默认使用 life-reset-day-one 题库；支持“查看题库 / 切换题库 / 自定义题库”。
-👤 首次先问“我该怎么称呼你？”并保存答案；之后只发一行“{name}，问题 行动”，不加 Hi、不换行。
-🙈 成功时只发送提醒正文，不输出“已处理”“已发送”或去重处理状态；只有失败或需要用户操作时才说明。
+$life-reset
 ```
+
+When waiting for the user's name or schedule preference, pause this heartbeat. Reactivate the same heartbeat after the user replies.

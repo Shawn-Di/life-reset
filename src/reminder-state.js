@@ -2,6 +2,7 @@ const CONVERSATION_TITLE = 'Life-reset';
 const DEFAULT_MODULE_ID = 'life-reset-day-one';
 const CONVERSATION_PHASES = Object.freeze({
   SILENT: 'silent',
+  AWAITING_NAME: 'awaiting-name',
   AWAITING_FEEDBACK: 'awaiting-feedback'
 });
 const DEFAULT_SCHEDULE = Object.freeze({
@@ -33,11 +34,11 @@ function markReminderDelivered(state = {}) {
 }
 
 function decideFeedback(state = {}, feedbackReceived = false) {
-  if (
-    state.conversationPhase !== CONVERSATION_PHASES.AWAITING_FEEDBACK
-    || !feedbackReceived
-  ) {
+  if (state.conversationPhase !== CONVERSATION_PHASES.AWAITING_FEEDBACK) {
     return { type: 'silent', phase: CONVERSATION_PHASES.SILENT };
+  }
+  if (!feedbackReceived) {
+    return { type: 'silent', phase: CONVERSATION_PHASES.AWAITING_FEEDBACK };
   }
 
   return { type: 'tactical-correction', phase: CONVERSATION_PHASES.SILENT };
@@ -51,9 +52,29 @@ function needsDisplayName(state = {}) {
   return typeof state.displayName !== 'string' || state.displayName.trim() === '';
 }
 
-function setDisplayName(state = {}, displayName) {
-  const name = typeof displayName === 'string' ? displayName.trim() : '';
-  return { ...state, displayName: name || null };
+function markNameRequested(state = {}) {
+  return { ...state, conversationPhase: CONVERSATION_PHASES.AWAITING_NAME };
+}
+
+function recordUserDisplayName(state = {}, message = {}) {
+  if (
+    state.conversationPhase !== CONVERSATION_PHASES.AWAITING_NAME
+    || message.author !== 'user'
+    || message.source !== 'direct'
+  ) {
+    return state;
+  }
+
+  const name = typeof message.text === 'string' ? message.text.trim() : '';
+  if (!name) {
+    return state;
+  }
+
+  return {
+    ...state,
+    displayName: name,
+    conversationPhase: CONVERSATION_PHASES.SILENT
+  };
 }
 
 function timeToMinutes(value) {
@@ -219,9 +240,10 @@ module.exports = {
   isReminderDue,
   isReminderSlot,
   isWithinReminderWindow,
+  markNameRequested,
   markReminderDelivered,
   needsDisplayName,
   needsSchedulePreference,
   parseReminderCommand,
-  setDisplayName
+  recordUserDisplayName
 };

@@ -25,11 +25,12 @@ On the first `$life-reset` activation, Codex should show one reviewable proposal
 
 ## Connect the reminder
 
-Use the prompt in [`automation-prompt.md`](./automation-prompt.md) when configuring a recurring Codex automation. The automation must keep the last successful task ID in user-owned automation state.
+Use the one-line prompt in [`automation-prompt.md`](./automation-prompt.md) when configuring a recurring Codex automation. Codex displays the scheduled-task input in the chat, so keep it to `$life-reset`. Use one thread-bound heartbeat so its assistant response appears directly in the `Life-reset` task. Do not use a standalone cron plus `send_message_to_thread`; Codex renders that cross-task message on the user side.
 
-- First run: create a new task titled `Life-reset`.
-- Later runs: send the reminder into the saved task when it is still accessible.
+- First run: create a new task titled `Life-reset` and attach the one heartbeat.
+- Later runs: let that heartbeat produce the assistant reminder in the same task.
 - Deleted or inaccessible task: create a replacement titled `Life-reset`.
-- Disabled reminders: do not create or send a task message.
+- Waiting for required user input: pause the heartbeat; reactivate the same one after the user replies.
+- Disabled reminders: pause the heartbeat.
 
-The creation or successful send is the reminder success condition. No read receipt is required.
+When waiting for user input, the heartbeat emits nothing. Successful runs contain only the question or reminder body—never progress, delivery records, or inbox items.

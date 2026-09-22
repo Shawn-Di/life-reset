@@ -4,7 +4,7 @@ The core content pack and reminder generator are platform-neutral. Integration d
 
 | Platform | Skill import | New conversation | Continue saved conversation | Current status |
 | --- | --- | --- | --- | --- |
-| Codex | `skills/life-reset/SKILL.md` or `npx skills add ... -a codex` | Use host automation | Use saved task ID when available | First adapter template |
+| Codex | `skills/life-reset/SKILL.md` or `npx skills add ... -a codex` | Create once, then attach heartbeat | Thread-bound heartbeat | Native adapter template |
 | Claude Code | `npx skills add ... -a claude-code` or Claude plugin | Configure host workflow | Configure host workflow | Generic adapter |
 | Kimi | `/plugins install <GitHub URL>` or `npx skills add ... -a kimi-code-cli` | Configure Kimi workflow if available | Configure Kimi workflow if available | Generic adapter |
 | WorkBuddy | `gh skill install ...` preview or Skill Marketplace ZIP | Configure WorkBuddy workflow if available | Configure WorkBuddy workflow if available | Generic adapter |
@@ -25,3 +25,4 @@ Every adapter should preserve these rules:
 4. The first new conversation is titled exactly `Life-reset`.
 5. Later reminders reuse the saved conversation when it remains accessible.
 6. If the saved conversation was deleted or is inaccessible, create a replacement titled exactly `Life-reset`, without creating another automation.
+7. User-input positions are reserved for the user. An adapter must never inject an answer or use a cross-conversation message as if it were user input.

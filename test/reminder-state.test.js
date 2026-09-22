@@ -12,11 +12,12 @@ const {
   isReminderDue,
   isReminderSlot,
   isWithinReminderWindow,
+  markNameRequested,
   markReminderDelivered,
   needsDisplayName,
   needsSchedulePreference,
   parseReminderCommand,
-  setDisplayName
+  recordUserDisplayName
 } = require('../src/reminder-state');
 
 test('reminders are enabled by default', () => {
@@ -41,7 +42,7 @@ test('uses the reminder feedback state machine', () => {
 
   assert.deepEqual(decideFeedback(awaitingFeedback, false), {
     type: 'silent',
-    phase: 'silent'
+    phase: 'awaiting-feedback'
   });
   assert.deepEqual(decideFeedback(awaitingFeedback, true), {
     type: 'tactical-correction',
@@ -68,12 +69,39 @@ test('asks for a preferred schedule until the user confirms one', () => {
   }), false);
 });
 
-test('asks for a display name only until the user provides one', () => {
-  const state = getDefaultState();
-  assert.equal(needsDisplayName(state), true);
-  const namedState = setDisplayName(state, '  Shawn  ');
+test('waits for a real user reply before saving a display name', () => {
+  const awaitingName = markNameRequested(getDefaultState());
+  assert.equal(needsDisplayName(awaitingName), true);
+  assert.equal(awaitingName.conversationPhase, 'awaiting-name');
+
+  const assistantReply = recordUserDisplayName(awaitingName, {
+    author: 'assistant',
+    text: '叫我 ChatGPT'
+  });
+  assert.strictEqual(assistantReply, awaitingName);
+
+  const emptyReply = recordUserDisplayName(awaitingName, {
+    author: 'user',
+    source: 'direct',
+    text: '   '
+  });
+  assert.strictEqual(emptyReply, awaitingName);
+
+  const delegatedReply = recordUserDisplayName(awaitingName, {
+    author: 'user',
+    source: 'cross-task',
+    text: '叫我 ChatGPT'
+  });
+  assert.strictEqual(delegatedReply, awaitingName);
+
+  const namedState = recordUserDisplayName(awaitingName, {
+    author: 'user',
+    source: 'direct',
+    text: '  Shawn  '
+  });
   assert.equal(needsDisplayName(namedState), false);
   assert.equal(namedState.displayName, 'Shawn');
+  assert.equal(namedState.conversationPhase, 'silent');
 });
 
 test('only sends a due reminder inside the local window', () => {

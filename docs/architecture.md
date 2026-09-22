@@ -33,7 +33,7 @@ The platform-neutral state is:
 
 ### Platform Adapter
 
-An adapter maps the contract to a host AI tool. It is responsible for scheduling, reading and writing user-owned state, checking whether the saved conversation is still accessible, and sending or creating a conversation.
+An adapter maps the contract to a host AI tool. It is responsible for scheduling, reading and writing user-owned state, checking whether the saved conversation is still accessible, and creating or attaching to a conversation. Codex uses one heartbeat attached to the canonical `Life-reset` task; it does not send cross-task messages because those are rendered as user-side input.
 
 The adapter uses the user's existing account, permissions, and token. The Skill does not issue credentials, log in, or store a separate token.
 
@@ -74,7 +74,7 @@ awaiting-feedback ── user gives a short report ──→ one-sentence tactic
         └──────── no report / unrelated question ─────┴──→ silent until next reminder
 ```
 
-On first activation without `displayName`, the conversation asks for the user's preferred name and saves it. Later reminders contain the name, selected question, and action on one line without module labels or a `Hi` greeting. The tactical correction is one sentence. The loop never claims that the user read the reminder, and it does not pressure the user to respond. Successful automation housekeeping remains silent.
+On first activation without `displayName`, the assistant outputs only the name question, enters `awaiting-name`, pauses the heartbeat, and stops. Only a user-authored message can leave this state; automation, assistant, system, tool, and cross-task messages cannot provide the name or advance the flow. After that reply, the same heartbeat resumes. Later reminders contain the name, selected question, and action on one line without module labels or a `Hi` greeting. Without user feedback, `awaiting-feedback` is preserved instead of inventing progress; the next real report receives one tactical correction. The loop never claims that the user read the reminder, invents a user response, or pressures the user to respond. Successful automation housekeeping produces no visible status or records.
 
 The active question bank is the module named by `moduleId`. “查看提醒题库” lists available modules; “切换到 <模块> 题库” changes only `moduleId`; “自定义提醒题库” adds a user-owned module with its own slots. Module changes never create another automation or conversation.
 
