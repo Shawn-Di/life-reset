@@ -1,4 +1,4 @@
-# 人生重启（life-reset）Implementation Plan
+# Life-reset Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -12,7 +12,7 @@
 
 ## Global Constraints
 
-- 产品显示名为“人生重启”，包名为 `life-reset`。
+- 产品显示名为 `Life-reset`，包名为 `life-reset`。
 - 第一版只围绕 Dan Koe 的文章《How to fix your entire life in 1 day》。
 - 新对话默认永久启用 Skill：在该对话生命周期内持续使用人生导师模式。
 - 默认主题路由：优先回答个人成长、目标、习惯、行动、复盘和人生方向相关问题。
@@ -72,11 +72,11 @@ coverage/
 
 Create `SKILL.md` with YAML frontmatter `name: life-reset` and a discriminating description. Its instructions must state that the Skill is initialized by a newly created conversation, remains active for that conversation lifetime, prioritizes personal growth and mentoring, gives concrete actions, and answers unrelated user requests directly without forcing a growth interpretation.
 
-The entrypoint must also state that proactive reminders are enabled by default, that the user can say “关闭人生重启提醒” or “开启人生重启提醒”, and that the Skill uses the user’s existing platform identity rather than owning a separate token.
+The entrypoint must also state that proactive reminders are enabled by default, that the user can say “关闭 Life-reset 提醒” or “开启 Life-reset 提醒”, and that the Skill uses the user’s existing platform identity rather than owning a separate token.
 
 - [ ] **Step 4: Add Codex UI metadata**
 
-Create `agents/openai.yaml` with display name `人生重启`, a short description, and a default prompt that starts the mentor conversation from the included reminder content.
+Create `agents/openai.yaml` with display name `Life-reset`, a short description, and a default prompt that starts the mentor conversation from the included reminder content.
 
 - [ ] **Step 5: Verify metadata**
 
@@ -112,7 +112,7 @@ Create `content/life-reset.json` with `version: 1` and one item:
 ```json
 {
   "id": "life-reset-day-one",
-  "title": "人生重启",
+  "title": "Life-reset",
   "author": "Dan Koe",
   "sourceUrl": "https://letters.thedankoe.com/p/how-to-fix-your-entire-life-in-1",
   "sourcePublishedAt": "2025-12-23",
@@ -186,14 +186,14 @@ Implement `loadContent` using `fs.readFileSync` and `JSON.parse`. Validate `vers
 
 - [ ] **Step 4: Write failing reminder tests**
 
-Add tests asserting that `buildSessionInstruction()` contains `人生重启` and `人生导师模式`, and that `buildReminder()` contains the selected title, prompt, action, and source URL.
+Add tests asserting that `buildSessionInstruction()` contains `Life-reset` and `人生导师模式`, and that `buildReminder()` contains the selected title, prompt, action, and source URL.
 
 - [ ] **Step 5: Implement the reminder functions**
 
 Use this output shape:
 
 ```text
-人生重启提醒
+Life-reset 提醒
 
 主题：<title>
 
@@ -222,8 +222,8 @@ Use this output shape:
 Add tests for default-enabled state, natural-language toggles, existing-conversation reuse, missing-conversation fallback, and the fixed title:
 
 ```js
-assert.equal(parseReminderCommand('关闭人生重启提醒'), 'disable');
-assert.equal(parseReminderCommand('开启人生重启提醒'), 'enable');
+assert.equal(parseReminderCommand('关闭 Life-reset 提醒'), 'disable');
+assert.equal(parseReminderCommand('开启 Life-reset 提醒'), 'enable');
 assert.deepEqual(decideDelivery({ enabled: true, conversationId: 'c1' }, true), {
   type: 'send',
   title: 'Life-reset'
@@ -248,7 +248,7 @@ Expected: all content and reminder tests PASS.
 
 Run: `npm run validate; npm run generate -- --include-session-instruction`
 
-Expected: validation succeeds and output includes the persistent session instruction, `人生重启提醒`, a question, an action, and the Dan Koe source URL.
+Expected: validation succeeds and output includes the persistent session instruction, `Life-reset 提醒`, a question, an action, and the Dan Koe source URL.
 
 - [ ] **Step 11: Commit**
 

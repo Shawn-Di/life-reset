@@ -82,7 +82,7 @@ The active question bank is the module named by `moduleId`. “查看提醒题�
 
 The default is enabled. The following natural-language commands update the user-level reminder setting:
 
-- `关闭人生重启提醒` / `disable life-reset reminders` → `enabled: false`
-- `开启人生重启提醒` / `enable life-reset reminders` → `enabled: true`
+- `关闭 Life-reset 提醒` / `disable life-reset reminders` → `enabled: false`
+- `开启 Life-reset 提醒` / `enable life-reset reminders` → `enabled: true`
 
 When no preferred time window has been confirmed, ask the user for a local-time range first. Until the user answers, use the default 08:00–22:00 window and a two-hour interval. The adapter owns the actual persistence mechanism because each host provides different workflow and storage capabilities.

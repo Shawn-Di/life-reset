@@ -27,9 +27,20 @@ test('loads the bundled life reset module', () => {
   assert.equal(findContentForTime(pack, '20:03').time, '20:00');
   assert.deepEqual(listModules(pack), [{
     id: 'life-reset-day-one',
-    title: '人生重启',
+    title: 'Life-reset',
     summary: '通过反思、聚焦和行动，重新夺回一天的主导权。'
   }]);
+});
+
+test('keeps bundled reminders concise', () => {
+  const pack = loadContent('content/life-reset.json');
+
+  for (const slot of pack.modules[0].slots) {
+    assert.ok(
+      `${slot.prompt} ${slot.action}`.length <= 40,
+      `${slot.time} reminder is too long`
+    );
+  }
 });
 
 test('rejects a missing required field', () => {
@@ -38,7 +49,7 @@ test('rejects a missing required field', () => {
     defaultModuleId: 'life-reset-day-one',
     modules: [{
       id: 'life-reset-day-one',
-      title: '人生重启',
+      title: 'Life-reset',
       summary: 'summary',
       slots: []
     }]

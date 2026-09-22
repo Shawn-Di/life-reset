@@ -20,7 +20,7 @@ Scheduling defaults to a two-hour interval in the user's local timezone. Adapter
 Every adapter should preserve these rules:
 
 1. Reminders are enabled by default.
-2. The user can say “关闭人生重启提醒” or “开启人生重启提醒”.
+2. The user can say “关闭 Life-reset 提醒” or “开启 Life-reset 提醒”.
 3. The operation uses the user's existing platform identity and token.
 4. The first new conversation is titled exactly `Life-reset`.
 5. Later reminders reuse the saved conversation when it remains accessible.

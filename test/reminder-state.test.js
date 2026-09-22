@@ -124,8 +124,9 @@ test('aligns reminders to the configured start minute', () => {
 });
 
 test('parses Chinese and English reminder toggles', () => {
+  assert.equal(parseReminderCommand('关闭 Life-reset 提醒'), 'disable');
+  assert.equal(parseReminderCommand('请开启 Life-reset 提醒'), 'enable');
   assert.equal(parseReminderCommand('关闭人生重启提醒'), 'disable');
-  assert.equal(parseReminderCommand('请开启人生重启提醒'), 'enable');
   assert.equal(parseReminderCommand('disable life-reset reminders'), 'disable');
   assert.equal(parseReminderCommand('enable life-reset reminders'), 'enable');
   assert.equal(parseReminderCommand('今天聊聊目标'), null);
