@@ -143,15 +143,15 @@ Skill 不拥有独立 Token，也不代替用户登录。调度、新建对话�
 
 ## 支持的平台
 
-| 平台 | Skill 接入 | 自动新建 / 继续对话 | 当前状态 |
-| --- | --- | --- | --- |
-| Codex | 支持 | 使用平台自动化配置 | 第一适配目标 |
-| Claude Code | 支持 | 使用平台工作流配置 | 通用适配 |
-| Kimi | 支持自定义指令时可用 | 取决于平台工作流 | 通用适配 |
-| WorkBuddy | 支持自定义指令时可用 | 取决于平台工作流 | 通用适配 |
-| 豆包 | 支持自定义指令时可用 | 取决于平台工作流 | 通用适配 |
-| Antigravity | 支持 | 使用平台 Skill / Plugin 能力 | 通用适配 |
-| Grok Bot | 支持自定义指令时可用 | 取决于平台工作流 | 通用适配 |
+| 平台 | 安装命令 |
+| --- | --- |
+| Codex | `npx skills add Shawn-Di/life-reset -a codex` |
+| Claude Code | `npx skills add Shawn-Di/life-reset -a claude-code` |
+| Kimi | `/plugins install https://github.com/Shawn-Di/life-reset` |
+| WorkBuddy | `gh skill install Shawn-Di/life-reset skills/life-reset --dir .workbuddy/skills` |
+| 豆包 | 手动导入 [`skills/life-reset/SKILL.md`](./skills/life-reset/SKILL.md) |
+| Antigravity | `agy plugin install https://github.com/Shawn-Di/life-reset` |
+| Grok Bot | `npx skills add Shawn-Di/life-reset -a grok` |
 
 默认按照用户当地时间每两个小时检查一次，只在 08:00–22:00 的白天时段发送，不进行 24 小时循环。首次还没有确认提醒时段时，会优先询问：
 
