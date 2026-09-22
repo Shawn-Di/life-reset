@@ -42,7 +42,7 @@ function getPlatformAdapter(platform) {
 function buildAutomationSetupPrompt(platform) {
   const { id, displayName } = getPlatformAdapter(platform);
   const delivery = id === 'codex'
-    ? '💓 使用绑定在 Life-reset 对话上的唯一 heartbeat，任务提示保持一行 Skill 调用和提醒动作；等待用户输入时暂停；禁止 standalone cron 和 send_message_to_thread。'
+    ? '💓 使用绑定在 Life-reset 对话上的唯一 heartbeat，任务提示必须严格为“$life-reset”；等待用户输入时暂停；禁止 standalone cron 和 send_message_to_thread。'
     : `💬 只复用一个 ${AUTOMATION_NAME} 对话；优先使用绑定在该对话上的原生定时能力，禁止用跨对话消息代替用户输入。`;
 
   return [
