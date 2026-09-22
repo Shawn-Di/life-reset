@@ -1,6 +1,0 @@
-{
-  "name": "life-reset",
-  "version": "0.1.0",
-  "description": "主动提醒并持续提供个人成长人生导师对话的 Skill。",
-  "skills": "./skills/"
-}

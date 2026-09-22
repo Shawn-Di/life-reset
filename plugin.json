@@ -1,5 +1,0 @@
-{
-  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
-  "name": "life-reset",
-  "description": "主动提醒并持续提供个人成长人生导师对话的 Skill。"
-}

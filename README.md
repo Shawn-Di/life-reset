@@ -16,17 +16,15 @@
 
 
 ## ⌚️30秒快速启动
-1/ 复制一下代码到你的Agent，安装skill
+1/ 支持 Agent Skills 标准的平台可用一条命令安装
 
 | 平台 | 安装命令 |
 | --- | --- |
-| Codex | `npx skills add Shawn-Di/life-reset -a codex` |
-| Claude Code | `npx skills add Shawn-Di/life-reset -a claude-code` |
-| Kimi | `/plugins install https://github.com/Shawn-Di/life-reset` |
+| Codex / Claude Code / Kimi Code CLI / Antigravity / Grok Build | `npx skills add Shawn-Di/life-reset -g --all --copy` |
 | WorkBuddy | `gh skill install Shawn-Di/life-reset skills/life-reset --dir .workbuddy/skills` |
 | 豆包 | 手动导入 [`skills/life-reset/SKILL.md`](./skills/life-reset/SKILL.md) |
-| Antigravity | `agy plugin install https://github.com/Shawn-Di/life-reset` |
-| Grok Bot | `npx skills add Shawn-Di/life-reset -a grok` |
+
+`--all` 会安装到安装器支持的全部 Agent。WorkBuddy 和豆包暂不支持这套统一入口，因此保留各自的安装方式。
 
 2/ 安装完成后他会创建一个自动化，默认是8:00-20:00。<br>你可以自定义这个提醒的时间，也可以自定义你想要的称呼。<br>但是请允许这个自动化执行，否则他将不会生效。
 

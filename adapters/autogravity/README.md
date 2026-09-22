@@ -1,12 +1,6 @@
 # AutoGravity adapter
 
-Antigravity CLI native install:
-
-```bash
-agy plugin install https://github.com/Shawn-Di/life-reset
-```
-
-Portable Skill install:
+Install with one command:
 
 ```bash
 npx skills add Shawn-Di/life-reset -a antigravity
@@ -18,7 +12,7 @@ The repository can print the canonical AutoGravity setup prompt with:
 npm run adapter-setup -- --platform autogravity
 ```
 
-If neither is available, import or paste `skills/life-reset/SKILL.md` into AutoGravity's supported custom instruction or Skill area. Connect the generated reminder to one AutoGravity workflow or scheduling rule when available.
+If the installer is unavailable, import or paste `skills/life-reset/SKILL.md` into AutoGravity's supported custom instruction or Skill area. Connect the generated reminder to one AutoGravity workflow or scheduling rule when available.
 
 Use the user's existing AutoGravity identity and token. Reminders are enabled by default and can be changed with “关闭 Life-reset 提醒” or “开启 Life-reset 提醒”. AutoGravity must have exactly one active automation named `Life-reset` with key `life-reset-v1`:
 

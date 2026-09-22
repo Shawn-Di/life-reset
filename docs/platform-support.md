@@ -5,11 +5,11 @@ The core content pack and reminder generator are platform-neutral. Integration d
 | Platform | Skill import | New conversation | Continue saved conversation | Current status |
 | --- | --- | --- | --- | --- |
 | Codex | `skills/life-reset/SKILL.md` or `npx skills add ... -a codex` | Create once, then attach heartbeat | Thread-bound heartbeat | Native adapter template |
-| Claude Code | `npx skills add ... -a claude-code` or Claude plugin | Configure host workflow | Configure host workflow | Generic adapter |
-| Kimi | `/plugins install <GitHub URL>` or `npx skills add ... -a kimi-code-cli` | Configure Kimi workflow if available | Configure Kimi workflow if available | Generic adapter |
+| Claude Code | `npx skills add ... -a claude-code` | Configure host workflow | Configure host workflow | Generic adapter |
+| Kimi | `npx skills add ... -a kimi-code-cli` | Configure Kimi workflow if available | Configure Kimi workflow if available | Generic adapter |
 | WorkBuddy | `gh skill install ...` preview or Skill Marketplace ZIP | Configure WorkBuddy workflow if available | Configure WorkBuddy workflow if available | Generic adapter |
 | 豆包 | Import or paste Skill instructions | Configure 豆包 workflow if available | Configure 豆包 workflow if available | Generic adapter |
-| AutoGravity | `agy plugin install <GitHub URL>` or `npx skills add ... -a antigravity` | Configure AutoGravity workflow if available | Configure AutoGravity workflow if available | Generic adapter |
+| AutoGravity | `npx skills add ... -a antigravity` | Configure AutoGravity workflow if available | Configure AutoGravity workflow if available | Generic adapter |
 | Grok Build | `npx skills add ... -a grok` | Configure Grok workflow if available | Configure Grok workflow if available | Generic adapter |
 | Grok Bot | Import or paste Skill instructions or official marketplace | Configure Grok workflow if available | Configure Grok workflow if available | Generic adapter |
 
