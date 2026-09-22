@@ -25,10 +25,11 @@ On the first `$life-reset` activation, Codex should show one reviewable proposal
 
 ## Connect the reminder
 
-Use the one-line prompt in [`automation-prompt.md`](./automation-prompt.md) when configuring a recurring Codex automation. Codex displays the scheduled-task input in the chat, so keep it to `$life-reset`. Use one thread-bound heartbeat so its assistant response appears directly in the `Life-reset` task. Do not use a standalone cron plus `send_message_to_thread`; Codex renders that cross-task message on the user side.
+Use the one-line prompt in [`automation-prompt.md`](./automation-prompt.md) when configuring a recurring Codex automation. Codex displays the scheduled-task input in the chat, so keep it to the Skill invocation plus the minimal reminder action. Use one thread-bound heartbeat so its assistant response appears directly in the `Life-reset` task. Do not use a standalone cron plus `send_message_to_thread`; Codex renders that cross-task message on the user side.
 
 - First run: create a new task titled `Life-reset` and attach the one heartbeat.
 - Later runs: let that heartbeat produce the assistant reminder in the same task.
+- Delayed start: use the current local hour's slot; do not require minute `00` again inside the Skill.
 - Deleted or inaccessible task: create a replacement titled `Life-reset`.
 - Waiting for required user input: pause the heartbeat; reactivate the same one after the user replies.
 - Disabled reminders: pause the heartbeat.

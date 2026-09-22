@@ -37,7 +37,7 @@ test('uses a thread-bound heartbeat for Codex delivery', () => {
   const prompt = buildAutomationSetupPrompt('codex');
 
   assert.match(prompt, /唯一 heartbeat/);
-  assert.match(prompt, /任务提示仅为“\$life-reset”/);
+  assert.match(prompt, /任务提示保持一行 Skill 调用和提醒动作/);
   assert.match(prompt, /等待用户输入时暂停/);
   assert.match(prompt, /禁止 standalone cron/);
   assert.match(prompt, /禁止.*send_message_to_thread/);
