@@ -1,5 +1,3 @@
-const path = require('node:path');
-
 const { findContent, findContentForTime, loadContent } = require('../src/content');
 const { buildReminder } = require('../src/reminder');
 
@@ -42,8 +40,7 @@ function parseArgs(args) {
 
 try {
   const options = parseArgs(process.argv.slice(2));
-  const contentPath = options.packPath || path.join(__dirname, '..', 'content', 'life-reset.json');
-  const pack = loadContent(contentPath);
+  const pack = loadContent(options.packPath || undefined);
   const moduleId = options.moduleId || pack.defaultModuleId;
   const item = options.time
     ? findContentForTime(pack, options.time, moduleId)

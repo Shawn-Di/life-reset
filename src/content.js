@@ -1,4 +1,14 @@
 const fs = require('node:fs');
+const path = require('node:path');
+
+const DEFAULT_CONTENT_PATH = path.join(
+  __dirname,
+  '..',
+  'skills',
+  'life-reset',
+  'references',
+  'content-pack.json'
+);
 
 const REQUIRED_MODULE_FIELDS = [
   'id',
@@ -16,7 +26,7 @@ const OPTIONAL_MODULE_FIELDS = [
 
 const SLOT_FIELDS = ['time', 'prompt', 'action'];
 
-function loadContent(filePath) {
+function loadContent(filePath = DEFAULT_CONTENT_PATH) {
   let pack;
 
   try {
@@ -151,6 +161,7 @@ function listModules(pack) {
 }
 
 module.exports = {
+  DEFAULT_CONTENT_PATH,
   findContent,
   findContentForTime,
   findModule,

@@ -95,44 +95,30 @@ git commit -m "feat: scaffold life-reset skill"
 
 **Files:**
 - Create: `schema/reminder.schema.json`
-- Create: `content/life-reset.json`
+- Create: `skills/life-reset/references/content-pack.json`
 
 **Interfaces:**
-- `content/life-reset.json` exposes one content item with `id`, `title`, `author`, `sourceUrl`, `sourcePublishedAt`, `summary`, `prompt`, `action`, and `copyrightNote`.
+- `skills/life-reset/references/content-pack.json` is the only bundled question bank.
 - `src/reminder.js` owns the persistent session instruction separately from the one-time reminder copy.
 
 - [ ] **Step 1: Define the JSON Schema**
 
 Create a draft 2020-12 schema requiring an object with `version` and `items`; require every item to contain the fields listed above, with non-empty strings; require `sourceUrl` to use `https`; and restrict `id` to lowercase letters, digits, and hyphens.
 
-- [ ] **Step 2: Add the first approved content item**
+- [ ] **Step 2: Add the approved content module**
 
-Create `content/life-reset.json` with `version: 1` and one item:
-
-```json
-{
-  "id": "life-reset-day-one",
-  "title": "Life-reset",
-  "author": "Dan Koe",
-  "sourceUrl": "https://letters.thedankoe.com/p/how-to-fix-your-entire-life-in-1",
-  "sourcePublishedAt": "2025-12-23",
-  "summary": "真正的改变不只是增加几个目标或逼自己更自律，而是重新审视当前身份、想要的生活和每天的行为。通过反思不想继续的生活，定义愿意靠近的方向，再把方向拆成年度使命、月度项目和今天能执行的行动。",
-  "prompt": "如果未来五年什么都不改变，你最不愿意继续过哪一种普通的一天？",
-  "action": "拿纸笔写下一个你不想继续接受的生活状态，再写下明天可以完成的一个最小行动。",
-  "copyrightNote": "本项目只保存原创摘要、行动问题和原文链接，不保存或重新发布文章全文。"
-}
-```
+Store the current approved prompts and actions only in `skills/life-reset/references/content-pack.json`. Do not duplicate reminder copy in plans, adapters, or another JSON file.
 
 - [ ] **Step 3: Validate JSON syntax and source fields**
 
-Run: `node -e "const x=require('./content/life-reset.json'); if(x.items.length!==1||!x.items[0].sourceUrl.startsWith('https://')) process.exit(1)"`
+Run: `npm run validate`
 
 Expected: exit code 0.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add schema/reminder.schema.json content/life-reset.json
+git add schema/reminder.schema.json skills/life-reset/references/content-pack.json
 git commit -m "feat: add life reset content contract"
 ```
 
@@ -164,12 +150,12 @@ Add tests covering the bundled content, missing required fields, duplicate IDs, 
 const { loadContent, findContent } = require('../src/content');
 
 test('loads the bundled life reset item', () => {
-  const pack = loadContent('content/life-reset.json');
+  const pack = loadContent();
   assert.equal(pack.items[0].id, 'life-reset-day-one');
 });
 
 test('rejects an unknown content id', () => {
-  const pack = loadContent('content/life-reset.json');
+  const pack = loadContent();
   assert.throws(() => findContent(pack, 'missing'), /Unknown content id/);
 });
 ```

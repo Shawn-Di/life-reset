@@ -5,7 +5,7 @@ const { findContentForTime, loadContent } = require('../src/content');
 const { buildFollowUp, buildReminder } = require('../src/reminder');
 
 test('keeps the scheduled question and reply action separate', () => {
-  const item = findContentForTime(loadContent('content/life-reset.json'), '08:00');
+  const item = findContentForTime(loadContent(), '08:00');
   const reminder = buildReminder(item, 'name');
 
   assert.equal(reminder, `name，${item.prompt}`);

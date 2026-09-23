@@ -5,6 +5,7 @@ const path = require('node:path');
 const test = require('node:test');
 
 const {
+  DEFAULT_CONTENT_PATH,
   findContent,
   findContentForTime,
   listModules,
@@ -19,7 +20,11 @@ function writeTempPack(pack) {
 }
 
 test('loads the bundled life reset module', () => {
-  const pack = loadContent('content/life-reset.json');
+  const pack = loadContent();
+  assert.equal(
+    path.normalize(DEFAULT_CONTENT_PATH),
+    path.resolve('skills/life-reset/references/content-pack.json')
+  );
   assert.equal(pack.defaultModuleId, 'life-reset-day-one');
   assert.equal(pack.modules[0].id, 'life-reset-day-one');
   assert.equal(pack.modules[0].slots.length, 7);
@@ -33,7 +38,7 @@ test('loads the bundled life reset module', () => {
 });
 
 test('keeps bundled reminders concise', () => {
-  const pack = loadContent('content/life-reset.json');
+  const pack = loadContent();
 
   for (const slot of pack.modules[0].slots) {
     assert.ok(slot.prompt.length <= 60, `${slot.time} prompt is too long`);
@@ -83,7 +88,7 @@ test('rejects duplicate module ids', () => {
 });
 
 test('rejects an unknown module id', () => {
-  const pack = loadContent('content/life-reset.json');
+  const pack = loadContent();
   assert.throws(() => findContent(pack, 'missing'), /Unknown module id: missing/);
 });
 
