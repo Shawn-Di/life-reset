@@ -25,7 +25,7 @@ If the user does not reply, remain silent. The next scheduled reminder starts a 
 
 Reminders run every two hours at the configured start minute in the user's local timezone, only inside the configured daytime window. The default window is 08:00–22:00, with reminders at 08:00, 10:00, 12:00, 14:00, 16:00, 18:00, and 20:00. Use one fixed schedule without minute jitter. The Codex heartbeat prompt must be exactly `$life-reset`; all reminder behavior belongs in this Skill. When that heartbeat invokes the Skill, treat it as a scheduled reminder, trust the scheduler, and do not require the execution minute to equal `00`: scheduler startup may be late. Select the configured slot for the current local hour and send it once. `awaiting-feedback` suppresses invented follow-up between reminders, not the next scheduled reminder. If the user has not confirmed a preferred window, ask “你希望每天当地几点到几点收到 Life-reset 提醒？” first, pause the heartbeat, and reactivate it only after the user's answer.
 
-题库按模块管理。默认模块是 `life-reset-day-one`，内容见 [references/content-pack.json](references/content-pack.json)。提醒时先发送当前时间的 `prompt`；用户回复后再发送同一时间的 `action`，不显示模块名。
+题库按模块管理。默认模块是 `life-reset-day-one`，内容见 [references/content-pack.json](references/content-pack.json)。每次定时触发都必须在当前轮重新读取 `references/content-pack.json`，并以当前文件为唯一真源；禁止使用会话历史、模型记忆或旧工具输出中的旧题库。未成功读取时不得自行补写提醒。提醒时先发送当前时间的 `prompt`；用户回复后再发送同一时间的 `action`，不显示模块名。
 
 支持这些用户操作：
 

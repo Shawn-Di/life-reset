@@ -41,6 +41,13 @@ test('keeps bundled reminders concise', () => {
   }
 });
 
+test('forces scheduled runs to reload the current content pack', () => {
+  const skill = fs.readFileSync('skills/life-reset/SKILL.md', 'utf8');
+
+  assert.match(skill, /每次定时触发.*当前轮重新读取.*content-pack\.json/);
+  assert.match(skill, /禁止使用.*会话历史.*旧题库/);
+});
+
 test('rejects a missing required field', () => {
   const pack = {
     version: 1,
