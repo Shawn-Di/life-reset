@@ -95,10 +95,10 @@ git commit -m "feat: scaffold life-reset skill"
 
 **Files:**
 - Create: `schema/reminder.schema.json`
-- Create: `skills/life-reset/references/content-pack.json`
+- Embed the default content pack in `skills/life-reset/SKILL.md`
 
 **Interfaces:**
-- `skills/life-reset/references/content-pack.json` is the only bundled question bank.
+- The marked JSON block in `skills/life-reset/SKILL.md` is the only bundled question bank.
 - `src/reminder.js` owns the persistent session instruction separately from the one-time reminder copy.
 
 - [ ] **Step 1: Define the JSON Schema**
@@ -107,7 +107,7 @@ Create a draft 2020-12 schema requiring an object with `version` and `items`; re
 
 - [ ] **Step 2: Add the approved content module**
 
-Store the current approved prompts and actions only in `skills/life-reset/references/content-pack.json`. Do not duplicate reminder copy in plans, adapters, or another JSON file.
+Store the current approved prompts and actions only in the marked JSON block in `skills/life-reset/SKILL.md`. Do not duplicate reminder copy in plans, adapters, or another JSON file.
 
 - [ ] **Step 3: Validate JSON syntax and source fields**
 
@@ -118,7 +118,7 @@ Expected: exit code 0.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add schema/reminder.schema.json skills/life-reset/references/content-pack.json
+git add schema/reminder.schema.json skills/life-reset/SKILL.md
 git commit -m "feat: add life reset content contract"
 ```
 

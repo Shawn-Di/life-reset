@@ -5,7 +5,7 @@ const path = require('node:path');
 const test = require('node:test');
 
 const {
-  DEFAULT_CONTENT_PATH,
+  DEFAULT_SKILL_PATH,
   findContent,
   findContentForTime,
   listModules,
@@ -22,8 +22,12 @@ function writeTempPack(pack) {
 test('loads the bundled life reset module', () => {
   const pack = loadContent();
   assert.equal(
-    path.normalize(DEFAULT_CONTENT_PATH),
-    path.resolve('skills/life-reset/references/content-pack.json')
+    path.normalize(DEFAULT_SKILL_PATH),
+    path.resolve('skills/life-reset/SKILL.md')
+  );
+  assert.equal(
+    fs.existsSync('skills/life-reset/references/content-pack.json'),
+    false
   );
   assert.equal(pack.defaultModuleId, 'life-reset-day-one');
   assert.equal(pack.modules[0].id, 'life-reset-day-one');
@@ -46,11 +50,12 @@ test('keeps bundled reminders concise', () => {
   }
 });
 
-test('forces scheduled runs to reload the current content pack', () => {
+test('bundles scheduled content in the injected skill instructions', () => {
   const skill = fs.readFileSync('skills/life-reset/SKILL.md', 'utf8');
 
-  assert.match(skill, /每次定时触发.*当前轮重新读取.*content-pack\.json/);
-  assert.match(skill, /禁止使用.*会话历史.*旧题库/);
+  assert.match(skill, /<!-- life-reset-content:start -->/);
+  assert.match(skill, /今天你要攻克哪一件/);
+  assert.doesNotMatch(skill, /读取.*content-pack\.json/);
 });
 
 test('rejects a missing required field', () => {

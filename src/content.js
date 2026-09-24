@@ -1,36 +1,41 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
-const DEFAULT_CONTENT_PATH = path.join(
+const DEFAULT_SKILL_PATH = path.join(
   __dirname,
   '..',
   'skills',
   'life-reset',
-  'references',
-  'content-pack.json'
+  'SKILL.md'
 );
 
-const REQUIRED_MODULE_FIELDS = [
-  'id',
-  'title',
-  'summary',
-  'slots'
-];
-
+const CONTENT_BLOCK = /<!-- life-reset-content:start -->\s*```json\s*([\s\S]*?)\s*```\s*<!-- life-reset-content:end -->/;
+const REQUIRED_MODULE_FIELDS = ['id', 'title', 'summary', 'slots'];
 const OPTIONAL_MODULE_FIELDS = [
   'author',
   'sourceUrl',
   'sourcePublishedAt',
   'copyrightNote'
 ];
-
 const SLOT_FIELDS = ['time', 'prompt', 'action'];
 
-function loadContent(filePath = DEFAULT_CONTENT_PATH) {
+function readBundledContent() {
+  const skill = fs.readFileSync(DEFAULT_SKILL_PATH, 'utf8');
+  const match = CONTENT_BLOCK.exec(skill);
+  if (!match) {
+    throw new Error('Embedded content pack not found in SKILL.md');
+  }
+  return match[1];
+}
+
+function loadContent(filePath) {
   let pack;
 
   try {
-    pack = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    const content = filePath
+      ? fs.readFileSync(filePath, 'utf8')
+      : readBundledContent();
+    pack = JSON.parse(content);
   } catch (error) {
     throw new Error(`Unable to read content pack: ${error.message}`);
   }
@@ -161,7 +166,7 @@ function listModules(pack) {
 }
 
 module.exports = {
-  DEFAULT_CONTENT_PATH,
+  DEFAULT_SKILL_PATH,
   findContent,
   findContentForTime,
   findModule,

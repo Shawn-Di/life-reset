@@ -25,7 +25,64 @@ If the user does not reply, remain silent. The next scheduled reminder starts a 
 
 Reminders run every two hours at the configured start minute in the user's local timezone, only inside the configured daytime window. The default window is 08:00–22:00, with reminders at 08:00, 10:00, 12:00, 14:00, 16:00, 18:00, and 20:00. Use one fixed schedule without minute jitter. The Codex heartbeat prompt must be exactly `$life-reset`; all reminder behavior belongs in this Skill. When that heartbeat invokes the Skill, treat it as a scheduled reminder, trust the scheduler, and do not require the execution minute to equal `00`: scheduler startup may be late. Select the configured slot for the current local hour and send it once. `awaiting-feedback` suppresses invented follow-up between reminders, not the next scheduled reminder. If the user has not confirmed a preferred window, ask “你希望每天当地几点到几点收到 Life-reset 提醒？” first, pause the heartbeat, and reactivate it only after the user's answer.
 
-题库按模块管理。默认模块是 `life-reset-day-one`，内容见 [references/content-pack.json](references/content-pack.json)。每次定时触发都必须在当前轮重新读取 `references/content-pack.json`，并以当前文件为唯一真源；禁止使用会话历史、模型记忆或旧工具输出中的旧题库。未成功读取时不得自行补写提醒。提醒时先发送当前时间的 `prompt`；用户回复后再发送同一时间的 `action`，不显示模块名。
+题库按模块管理。默认模块是 `life-reset-day-one`。默认题库直接嵌入本文件，因为定时任务可能没有读取安装目录中其他文件的权限。定时触发时禁止调用工具、命令或读取外部题库；直接使用下面的当前内容。提醒时先发送当前时间的 `prompt`；用户回复后再发送同一时间的 `action`，不显示模块名。
+
+<!-- life-reset-content:start -->
+```json
+{
+  "version": 1,
+  "defaultModuleId": "life-reset-day-one",
+  "modules": [
+    {
+      "id": "life-reset-day-one",
+      "title": "Life-reset",
+      "author": "Dan Koe",
+      "sourceUrl": "https://letters.thedankoe.com/p/how-to-fix-your-entire-life-in-1",
+      "sourcePublishedAt": "2025-12-23",
+      "summary": "通过反思、聚焦和行动，重新夺回一天的主导权。",
+      "copyrightNote": "本项目只保存原创摘要、行动问题和原文链接，不保存或重新发布文章全文。",
+      "slots": [
+        {
+          "time": "08:00",
+          "prompt": "今天你要攻克哪一件“如果没做，晚上闭眼就会感到焦虑”的事情？",
+          "action": "深呼吸，在纸上只写下今日唯一的 **“北极星任务”**。"
+        },
+        {
+          "time": "10:00",
+          "prompt": "你现在是在做真正重要的事情，还是逃避拖延做真正重要的事情？",
+          "action": "把任务拆解为 **“接下来的 15 分钟做……”**，然后直接动手。"
+        },
+        {
+          "time": "12:00",
+          "prompt": "舍弃劣质多巴胺，体验 10 分钟没有屏幕的世界吧。",
+          "action": "合上手机或电脑，望远 3 分钟，闭眼休息一会，或散步 10 分钟。"
+        },
+        {
+          "time": "14:00",
+          "prompt": "你“看起来很忙”，是不是在掩盖你懒于深度思考？像是体制内随时能被替换的消耗品。",
+          "action": "审视当前的待办清单，**果断砍掉或延后无意义的杂务**，重新聚焦高价值工作。"
+        },
+        {
+          "time": "16:00",
+          "prompt": "把今天吸收的信息，提炼成属于你自己的独特技能吧。",
+          "action": "用 3 句话总结今天学到的一个认知，写下你的个人见解（POV）。"
+        },
+        {
+          "time": "18:00",
+          "prompt": "今天属于别人的时间结束了，属于你自己的时间开始了没？",
+          "action": "准备投入个人进步时间！"
+        },
+        {
+          "time": "20:00",
+          "prompt": "今天你的行动，是让你离不想要的生活更远了，还是更近了？",
+          "action": "写下一条今天做得好的地方，以及明天坚决要做的事，然后安心入睡。"
+        }
+      ]
+    }
+  ]
+}
+```
+<!-- life-reset-content:end -->
 
 支持这些用户操作：
 

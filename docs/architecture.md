@@ -4,7 +4,7 @@
 
 ### Content Pack
 
-`skills/life-reset/references/content-pack.json` is the single bundled content registry used by both the installed Skill and local tooling. It contains a `defaultModuleId` and independent reminder modules. Each module owns its metadata and local-time question/action slots. The project does not fetch or republish the source article.
+The marked JSON block in `skills/life-reset/SKILL.md` is the single bundled content registry used by both the installed Skill and local tooling. It contains a `defaultModuleId` and independent reminder modules. Each module owns its metadata and local-time question/action slots. The project does not fetch or republish the source article.
 
 ### Reminder Contract
 
